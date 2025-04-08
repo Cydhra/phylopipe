@@ -1,3 +1,10 @@
 # IDEA
 .idea/
 **.iml
+
+# Windows Binaries
+modules/**.exe
+
+# Linux Binaries
+modules/newick/newick
+modules/raxml/raxml-ng-2
