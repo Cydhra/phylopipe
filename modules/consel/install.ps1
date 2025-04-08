@@ -1,5 +1,8 @@
 Push-Location $PSScriptRoot
 
+# load config
+. ..\..\config.ps1
+
 $INSTALL_DIR = "bin/"
 
 if (Test-Path "$INSTALL_DIR/consel") {
@@ -9,7 +12,7 @@ if (Test-Path "$INSTALL_DIR/consel") {
 }
 
 Write-Host "Cloning consel at latest commit"
-git clone https://github.com/shimo-lab/consel
+git clone $CONSEL_URL
 Push-Location consel
 
 Write-Host "Compiling consel under WSL"

@@ -1,5 +1,8 @@
 Push-Location $PSScriptRoot
 
+# load config
+. ..\..\config.ps1
+
 $INSTALL_FILE = "raxml-ng-2"
 
 if (Test-Path $INSTALL_FILE) {
@@ -9,9 +12,9 @@ if (Test-Path $INSTALL_FILE) {
 }
 
 Write-Host "Cloning RAxML at latest supported commit"
-git clone https://github.com/amkozlov/raxml-ng --branch dev
+git clone $RAXML_URL --branch $RAXML_BRANCH
 Push-Location raxml-ng
-git checkout 5c07bb65fd50b7d739b4e9cebfbae0475b44a51d
+git checkout $RAXML_COMMIT
 git submodule update --init --recursive
 
 Write-Host "Compiling RAxML under WSL"
