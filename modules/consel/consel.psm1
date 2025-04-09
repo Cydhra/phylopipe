@@ -35,7 +35,7 @@ class Consel {
     #   $prefix: The prefix for the output files (will create $prefix.pv and $prefix.ci)
     # Returns:
     #   The path to the PV file (i.e., $prefix.pv)
-    static [void] run_consel([string]$rmt_file, [string]$prefix) {
+    static [string] run_consel([string]$rmt_file, [string]$prefix) {
         $wsl_rmt_file = [Util]::wsl_path($rmt_file)
         $wsl_prefix = [Util]::wsl_path($prefix)
         $wsl_consel_path = [Consel]::wsl_consel_path()
