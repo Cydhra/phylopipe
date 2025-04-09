@@ -44,6 +44,25 @@ class Consel {
         $wsl_pv_file = [Util]::wsl_path($pv_file)
         $wsl_catpv_path = [Consel]::wsl_catpv_path()
 
-        (wsl $wsl_catpv_path $wsl_pv_file) # TODO: parse the output which is space-aligned instead of tab-separated
+        (wsl $wsl_catpv_path $wsl_pv_file) | `
+            where { -not [string]::IsNullOrEmpty($_) } | `
+            select -Skip 2 | `
+            % {
+                $cols = $_ -split '\s{1,}'
+                [PSCustomObject]@{
+                    rank = [int]$cols[1]
+                    item = [int]$cols[2]
+                    obs = [float]$cols[3]
+                    au = [float]$cols[4]
+                    np = [float]$cols[5]
+                    bp = [float]$cols[7]
+                    pp = [float]$cols[8]
+                    kh = [float]$cols[9]
+                    sh = [float]$cols[10]
+                    wkh = [float]$cols[11]
+                    wsh = [float]$cols[12]
+                }
+            } | `
+            Export-Csv -Path $tsv_file -NoTypeInformation -Delimiter "`t" -Encoding UTF8 -UseQuotes Never
     }
 }
