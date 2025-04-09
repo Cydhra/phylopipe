@@ -8,3 +8,4 @@ modules/**.exe
 # Linux Binaries
 modules/newick/newick
 modules/raxml/raxml-ng-2
+modules/consel/bin
