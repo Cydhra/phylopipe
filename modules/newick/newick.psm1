@@ -26,6 +26,29 @@ class Newick {
         }
     }
 
+    # Compare several trees using the Robinson-Foulds metric.
+    # Returns a list of objects with three values each: the absolute RF distance, the maximum RF distance possible between the trees,
+    # and the normalized RF distance (between 0 and 1).
+    static [Object[]] robinson_foulds_all([string]$trees) {
+        $tree_count = (Get-Content $trees | measure).Count
+
+        $wsl_trees = [Util]::wsl_path($trees)
+        $newick_path = [Newick]::wsl_newick_path()
+
+        $allOutput = ((& wsl $newick_path -rofos $wsl_trees) 2>&1) -split "`n"
+        $tree_measurements = $allOutput | select -Skip 1
+
+        return $tree_measurements | % {
+            if ($_ -match "^RF = (\d+) / (\d+), (\-?\d+(\.\d+)?)") {
+                [PSCustomObject]@{
+                    RF = $Matches[1]
+                    MaxRF = $Matches[2]
+                    NormRF = $Matches[3]
+                }
+            }
+        }
+    }
+
     # convert a newick tree to a TSV file
     static [void] newick2tsv([string]$path, [string]$output) {
         $newick_path = [Newick]::wsl_newick_path()
