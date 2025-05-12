@@ -6,3 +6,6 @@
 
 "Installing consel..."
 & modules\consel\install.ps1
+
+"Installing treestats..."
+& modules\treestats\install.ps1

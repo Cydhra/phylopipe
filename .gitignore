@@ -4,6 +4,7 @@
 
 # Windows Binaries
 modules/**.exe
+modules/treestats/R
 
 # Linux Binaries
 modules/newick/newick
