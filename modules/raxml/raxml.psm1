@@ -29,4 +29,23 @@ class Raxml {
 
         wsl $raxml_path --rfdist --tree "$wsl_tree_pattern" --prefix "$wsl_prefix"
     }
+
+    static [void] sitelh([string]$msa_file, [string]$tree_file, [string]$model, [string]$prefix) {
+        $raxml_path = [Raxml]::raxml_path()
+        $wsl_msa_file = [Util]::wsl_path($msa_file)
+        $wsl_tree_file = [Util]::wsl_path($tree_file)
+        $wsl_prefix = [Util]::wsl_path($prefix)
+
+        wsl $raxml_path --sitelh --msa "$wsl_msa_file" --tree "$wsl_tree_file" --model "$model" --prefix "$wsl_prefix"
+    }
+
+    static [void] partitioned_sitelh([string]$msa_file, [string]$tree_file, [string]$model_file, [string]$prefix) {
+        $raxml_path = [Raxml]::raxml_path()
+        $wsl_msa_file = [Util]::wsl_path($msa_file)
+        $wsl_tree_file = [Util]::wsl_path($tree_file)
+        $wsl_model_file = [Util]::wsl_path($model_file)
+        $wsl_prefix = [Util]::wsl_path($prefix)
+
+        wsl $raxml_path --sitelh --msa "$wsl_msa_file" --tree "$wsl_tree_file" --model "$wsl_model_file" --prefix "$wsl_prefix"
+    }
 }
