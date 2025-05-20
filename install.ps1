@@ -9,3 +9,6 @@
 
 "Installing treestats..."
 & modules\treestats\install.ps1
+
+"Installing typst..."
+& modules\typst\install.ps1
