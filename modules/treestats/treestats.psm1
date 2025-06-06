@@ -43,4 +43,10 @@ class Treestats {
         $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "imbalance_steps" $tree_file 2> $null
         return $values
     }
+
+    # Calculate the maximum width
+    static [int[]] max_width([string]$tree_file) {
+        $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "max_width" $tree_file 2> $null
+        return $values
+    }
 }
