@@ -1,51 +1,118 @@
-using module ..\util
+Import-Module $PSScriptRoot/../linux
 
-class Raxml {
-    static [string] raxml_path() {
-        return [Util]::wsl_path("$PSScriptRoot\raxml-ng-2")
-    }
-
-    static [void] consensus([string]$tree_file, [string]$prefix) {
-        $raxml_path = [Raxml]::raxml_path()
-        $wsl_tree_file = [Util]::wsl_path($tree_file)
-        $wsl_prefix = [Util]::wsl_path($prefix)
-
-        wsl $raxml_path --consense --tree "$wsl_tree_file" --prefix "$wsl_prefix"
-    }
-
-    static [void] rf_dist([string]$tree_file, [string]$prefix) {
-        $raxml_path = [Raxml]::raxml_path()
-        $wsl_tree_file = [Util]::wsl_path($tree_file)
-        $wsl_prefix = [Util]::wsl_path($prefix)
-
-        wsl $raxml_path --rfdist --tree "$wsl_tree_file" --prefix "$wsl_prefix"
-    }
-
-    static [void] rf_dist_list([string[]]$tree_files, [string]$prefix) {
-        $raxml_path = [Raxml]::raxml_path()
-        $wsl_prefix = [Util]::wsl_path($prefix)
-
-        $wsl_tree_pattern = ($tree_files | % { [Util]::wsl_path($_) }) -join ","
-
-        wsl $raxml_path --rfdist --tree "$wsl_tree_pattern" --prefix "$wsl_prefix"
-    }
-
-    static [void] sitelh([string]$msa_file, [string]$tree_file, [string]$model, [string]$prefix) {
-        $raxml_path = [Raxml]::raxml_path()
-        $wsl_msa_file = [Util]::wsl_path($msa_file)
-        $wsl_tree_file = [Util]::wsl_path($tree_file)
-        $wsl_prefix = [Util]::wsl_path($prefix)
-
-        wsl $raxml_path --sitelh --msa "$wsl_msa_file" --tree "$wsl_tree_file" --model "$model" --prefix "$wsl_prefix"
-    }
-
-    static [void] partitioned_sitelh([string]$msa_file, [string]$tree_file, [string]$model_file, [string]$prefix) {
-        $raxml_path = [Raxml]::raxml_path()
-        $wsl_msa_file = [Util]::wsl_path($msa_file)
-        $wsl_tree_file = [Util]::wsl_path($tree_file)
-        $wsl_model_file = [Util]::wsl_path($model_file)
-        $wsl_prefix = [Util]::wsl_path($prefix)
-
-        wsl $raxml_path --sitelh --msa "$wsl_msa_file" --tree "$wsl_tree_file" --model "$wsl_model_file" --prefix "$wsl_prefix"
-    }
+function Get-RaxmlPath
+{
+    return ConvertTo-LinuxPath -Path ([System.IO.Path]::Combine($PSScriptRoot, "raxml-ng-2"))
 }
+
+function Invoke-Raxml
+{
+    param(
+        [ValidateSet("all", "ancestral", "bootstrap", "bsconverge", "bsmsa", "check", "consense", "evaluate",
+                "loglh", "parse", "rfdist", "search", "sitelh", "support", "start", "terrace", IgnoreCase = $true)]
+        [Parameter(Mandatory = $true)]
+        [string] $Command,
+
+        [string] $msa,
+
+        [string] $model,
+
+        [Parameter(Mandatory = $false)]
+        [string] $state_encoding,
+
+        [string] $tree,
+
+        [Parameter(Mandatory = $true)]
+        [string] $prefix,
+
+        [ValidateSet("linked", "scaled", "unlinked", IgnoreCase = $true)]
+        [Parameter(Mandatory = $false)]
+        [string] $brlen = "scaled",
+
+        [Parameter(Mandatory = $false)]
+        [string] $tree_constraint,
+
+        [Parameter(Mandatory = $false)]
+        [string[]] $outgroup,
+
+        [Parameter(Mandatory = $false)]
+        [string] $site_weights,
+
+        [Parameter(Mandatory = $false)]
+        [int] $threads = -1,
+
+        [Parameter(Mandatory = $false)]
+        [int] $lh_epsilon = -1,
+
+        [switch] $redo
+    )
+
+    $CommandLine = @()
+    $CommandLine += "--$($Command.ToLower())"
+
+    if ($msa -ne "") {
+        $CommandLine += "--msa"
+        $CommandLine += (ConvertTo-LinuxPath -Path $msa)
+    }
+
+    if ($model -ne "") {
+        $CommandLine += "--model"
+        $Param = $model
+
+        if ($state_encoding -ne "") {
+            $Param += "+M{$(ConvertTo-LinuxPath -Path $state_encoding)}`""
+        }
+
+        $CommandLine += $Param
+    }
+
+    if ($tree -ne "") {
+        $CommandLine += "--tree"
+        if ($tree.StartsWith("rand") -or $tree.StartsWith("pars")) {
+            $CommandLine += $tree
+        } else {
+            $CommandLine += (ConvertTo-LinuxPath -Path $tree)
+        }
+    }
+
+    if ($brlen.ToLower() -ne "scaled") {
+        $CommandLine += "--brlen"
+        $CommandLine += $brlen.ToLower()
+    }
+
+    if ($tree_constraint -ne "") {
+        $CommandLine += "--tree-constraint"
+        $CommandLine += (ConvertTo-LinuxPath -Path $tree_constraint)
+    }
+
+    if ($null -ne $outgroup -and ($outgroup.Count -gt 0)) {
+        $CommandLine += "--outgroup"
+        $CommandLine += ($outgroup -join ",")
+    }
+
+    if ($site_weights -ne "") {
+        $CommandLine += "--site-weights"
+        $CommandLine += (ConvertTo-LinuxPath -Path $site_weights)
+    }
+
+    $CommandLine += "--prefix"
+    $CommandLine += (ConvertTo-LinuxPath -Path $prefix)
+
+    if ($threads -gt 0) {
+        $CommandLine += "--threads"
+        $CommandLine += $threads
+    }
+
+    if ($lh_epsilon -ge 0) {
+        $CommandLine += "--lhepsilon"
+        $CommandLine += $lh_epsilon
+    }
+
+    if ($redo) {
+        $CommandLine += "--redo"
+    }
+
+    Invoke-OnLinux -Path (Get-RaxmlPath) $CommandLine
+}
+
+Export-ModuleMember -Function Invoke-Raxml
