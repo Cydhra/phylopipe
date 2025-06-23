@@ -77,7 +77,7 @@ function Invoke-Raxml
 {
     param(
         [ValidateSet("all", "ancestral", "bootstrap", "bsconverge", "bsmsa", "check", "consense", "evaluate",
-                "loglh", "parse", "rfdist", "search", "sitelh", "support", "start", "terrace", IgnoreCase = $true)]
+                "sitelh", "parse", "rfdist", "search", "sitelh", "support", "start", "terrace", IgnoreCase = $true)]
         [Parameter(Mandatory = $true)]
         [string] $Command,
 
