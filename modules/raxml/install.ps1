@@ -24,7 +24,7 @@ Write-Host "Compiling RAxML under WSL"
 Invoke-OnLinux -Path dos2unix ../compile.sh
 
 # Build the project under WSL
-Invoke-OnLinux -Path ../compile.sh
+Invoke-OnLinux -Path /usr/bin/env bash ../compile.sh
 Pop-Location
 
 # Copy the compiled binary to the scripts directory
