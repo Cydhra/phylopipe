@@ -6,7 +6,7 @@ if [ ! -d "src" ]; then
 fi
 
 mkdir build && pushd build
-cmake -DSTATIC_BUILD=ON -DPORTABLE_BUILD=ON ..
+cmake -DSTATIC_BUILD=ON DCORAX_BUILD_PORTABLE_ARCH=haswell ..
 make
 popd
 
