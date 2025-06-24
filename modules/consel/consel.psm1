@@ -103,10 +103,10 @@ function Invoke-Consel {
 function Import-Pv {
     param(
         [Parameter(Mandatory = $true)]
-        [string] $Pv
+        [string] $Input
     )
 
-    $linux_pv = ConvertTo-LinuxPath -Path $Pv
+    $linux_pv = ConvertTo-LinuxPath -Path $Input
     Invoke-OnLinux -Path (Get-CatpvPath) $linux_pv | `
         where { -not [string]::IsNullOrEmpty($_) } | `
         select -Skip 2 | `
