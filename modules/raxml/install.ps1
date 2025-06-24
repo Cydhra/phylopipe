@@ -3,7 +3,7 @@ Push-Location $PSScriptRoot
 # load config
 . ..\..\config.ps1
 
-Import-Module $PSScriptRoot/modules/linux
+Import-Module $PSScriptRoot/../linux
 
 $INSTALL_FILE = "raxml-ng-2"
 
