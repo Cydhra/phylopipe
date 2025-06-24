@@ -30,7 +30,7 @@ Copy-Item consel/bin/* bin/
 
 Write-Host "Cleaning up..."
 # Clean up
-rm -Recurse -Force consel
+Remove-Item -Recurse -Force consel
 
 Pop-Location
 Write-Host "Successfully installed consel."
