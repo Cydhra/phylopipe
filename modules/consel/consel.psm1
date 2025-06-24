@@ -51,7 +51,7 @@ function Invoke-Makermt {
     $linux_sitelh = ConvertTo-LinuxPath -Path $Sitelh
     $linux_output = ConvertTo-LinuxPath -Path $Output
 
-    Invoke-OnLinux -Path Get-MakermtPath "--$Format" $linux_sitelh $linux_output
+    Invoke-OnLinux -Path (Get-MakermtPath) "--$Format" $linux_sitelh $linux_output
 }
 
 <#
@@ -81,7 +81,7 @@ function Invoke-Consel {
     $linux_rmt = ConvertTo-LinuxPath -Path $Rmt
     $linux_output = ConvertTo-LinuxPath -Path $Output
 
-    Invoke-OnLinux -Path Get-ConselPath $linux_rmt $linux_output
+    Invoke-OnLinux -Path (Get-ConselPath) $linux_rmt $linux_output
 }
 
 <#
@@ -107,7 +107,7 @@ function Import-Pv {
     )
 
     $linux_pv = ConvertTo-LinuxPath -Path $Pv
-    Invoke-OnLinux -Path Get-CatpvPath $linux_pv | `
+    Invoke-OnLinux -Path (Get-CatpvPath) $linux_pv | `
         where { -not [string]::IsNullOrEmpty($_) } | `
         select -Skip 2 | `
         % {
