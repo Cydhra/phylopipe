@@ -1,94 +1,59 @@
-using module ..\util
+Import-Module $PSScriptRoot/../linux
 
-class Newick {
-    static [string] wsl_newick_path() {
-        return [Util]::wsl_path([System.IO.Path]::Combine($PSScriptRoot, "newick"))
+function Get-NewickPath {
+    return ConvertTo-LinuxPath -Path ([System.IO.Path]::Combine($PSScriptRoot, "newick"))
+}
+
+<#
+ .SYNOPSIS
+ Call Newick to obtain the RF distance between two trees given as newick files.
+
+ .DESCRIPTION
+ Calls Newick with two paths and returns and array of three values: The absolute RF distance, the maximum possible
+ RF distance, and the relative RF distance between both trees. The paths may be native paths and will automatically
+ converted to Linux-compatible paths. If the "File" parameter is set, it returns a triple of results for each pair
+ of trees in the file, in upper-triangle matrix row-major order.
+
+ .PARAMETER Tree1
+ Path to a newick file containing one tree.
+
+ .PARAMETER Tree2
+ Path to a newick file containing one tree with the same number of taxa.
+
+ .PARAMETER File
+ Path to a newick file containing many trees, of which Newick calculates the pairwise RF distances.
+#>
+function Get-RFDistance {
+    param(
+        [Parameter(Mandatory, ParameterSetName="TwoTrees")]
+        [string] $Tree1,
+
+        [Parameter(Mandatory, ParameterSetName="TwoTrees")]
+        [string] $Tree2,
+
+        [Parameter(Mandatory, ParameterSetName="ManyTrees")]
+        [string] $File
+    )
+    $all_outputs = $null
+
+    if ($Tree1 -ne "") {
+        $t1 = ConvertTo-LinuxPath -Path $Tree1
+        $t2 = ConvertTo-LinuxPath -Path $Tree2
+
+        $all_outputs = ((Invoke-OnLinux -Path (Get-NewickPath) -rofo $t1 -tree2 $t2) 2>&1) | ?{ $_ -is [System.Management.Automation.ErrorRecord] }
+    } else {
+        $trees = ConvertTo-LinuxPath -Path $File
+        $all_outputs = ((((Invoke-OnLinux -Path (Get-NewickPath) -rofos $trees) 2>&1) | ?{ $_ -is [System.Management.Automation.ErrorRecord] }) -split "`n") | select -Skip 1
     }
 
-    # Compare two trees using the Robinson-Foulds metric.
-    # Returns three values: the absolute RF distance, the maximum RF distance possible between the trees,
-    # and the normalized RF distance (between 0 and 1).
-    static [Object[]] robinson_foulds([string]$tree1, [string]$tree2) {
-        $wsl_tree1 = [Util]::wsl_path($tree1)
-        $wsl_tree2 = [Util]::wsl_path($tree2)
-
-        $newick_path = [Newick]::wsl_newick_path()
-
-        $allOutput = $null # modules may not use uninitialized variables
-        (wsl $newick_path -rofo $wsl_tree1 -tree2 $wsl_tree2) 2>&1 | tee -Variable allOutput
-        $stderr = $allOutput | ?{ $_ -is [System.Management.Automation.ErrorRecord] } | Select-Object -Last 1
-
-        if ($stderr -match "^RF = (\d+) / (\d+), (\-?\d+(\.\d+)?)") {
-            return $Matches[1], $Matches[2], $Matches[3]
-        } else {
-            Write-Host "Error comparing trees: $stderr"
-            return $null
-        }
-    }
-
-    # Compare several trees using the Robinson-Foulds metric.
-    # Returns a list of objects with three values each: the absolute RF distance, the maximum RF distance possible between the trees,
-    # and the normalized RF distance (between 0 and 1).
-    static [Object[]] robinson_foulds_all([string]$trees) {
-        $tree_count = (Get-Content $trees | measure).Count
-
-        $wsl_trees = [Util]::wsl_path($trees)
-        $newick_path = [Newick]::wsl_newick_path()
-
-        $allOutput = ((& wsl $newick_path -rofos $wsl_trees) 2>&1) -split "`n"
-        $tree_measurements = $allOutput | select -Skip 1
-
-        return $tree_measurements | % {
-            if ($_ -match "^RF = (\d+) / (\d+), (\-?\d+(\.\d+)?)") {
-                [PSCustomObject]@{
-                    RF = $Matches[1]
-                    MaxRF = $Matches[2]
-                    NormRF = $Matches[3]
-                }
+    $all_outputs | % {
+        if ($_ -match "^RF = (\d+) / (\d+), (\-?\d+(\.\d+)?)") {
+            [PSCustomObject]@{
+                RF = $Matches[1]
+                Max = $Matches[2]
+                Relative = $Matches[3]
             }
         }
     }
-
-    # convert a newick tree to a TSV file
-    static [void] newick2tsv([string]$path, [string]$output) {
-        $newick_path = [Newick]::wsl_newick_path()
-        $wsl_path = [Util]::wsl_path($path)
-        $wsl_output = [Util]::wsl_path($output)
-        (wsl $newick_path -newick2tsv $wsl_path -output $wsl_output) *> $null
-    }
-
-    # Compare a tree to a taxonomy given as a feature file
-    static [void] tax([string]$tree, [string]$feature_file, [string]$output_file) {
-        $wsl_tree = [Util]::wsl_path($tree)
-        $wsl_feature_file = [Util]::wsl_path($feature_file)
-        $wsl_output_file = [Util]::wsl_path($output_file)
-        $newick_path = [Newick]::wsl_newick_path()
-
-        (wsl dos2unix $wsl_feature_file) *> $null
-        (wsl $newick_path -tax $wsl_tree -features $wsl_feature_file -fevout $wsl_output_file) *> $null
-    }
-
-    # Extract the subtrees of all nodes that are identified to be the LCA nodes of the features in the given feature file.
-    static [void] lca_subtrees([string]$tree, [string]$feature_file, [string]$output_file) {
-        $wsl_tree = [Util]::wsl_path($tree)
-        $wsl_feature_file = [Util]::wsl_path($feature_file)
-        $wsl_output_file = [Util]::wsl_path($output_file)
-        $newick_path = [Newick]::wsl_newick_path()
-
-        (wsl dos2unix $wsl_feature_file) *> $null
-        (wsl $newick_path -getlcasubtrees $wsl_tree -features $wsl_feature_file -fevout $wsl_output_file) *> $null
-    }
-
-    # Condense a given tree using the taxonomic features in the given feature file.
-    # Newick will attempt to find the LCA nodes for each feature, and then condense the tree so its leaves
-    # correspond to the identified LCA nodes.
-    static [void] condense([string]$tree, [string]$feature_file, [string]$output_file) {
-        $wsl_tree = [Util]::wsl_path($tree)
-        $wsl_feature_file = [Util]::wsl_path($feature_file)
-        $wsl_output_file = [Util]::wsl_path($output_file)
-        $newick_path = [Newick]::wsl_newick_path()
-
-        (wsl dos2unix $wsl_feature_file) *> $null
-        (wsl $newick_path -condense $wsl_tree -features $wsl_feature_file -output $wsl_output_file) *> $null
-    }
 }
+
