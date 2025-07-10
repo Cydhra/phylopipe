@@ -72,6 +72,9 @@ function Get-RaxmlPath
 
  .PARAMETER Redo
  Switch to force overwriting of existing results at the given prefix.
+
+ .PARAMETER ForceThreads
+ Switch to force raxml considers it a waste of resources
 #>
 function Invoke-Raxml
 {
@@ -123,7 +126,9 @@ function Invoke-Raxml
         [Parameter(Mandatory = $false)]
         [int] $LhEpsilon = -1,
 
-        [switch] $Redo
+        [switch] $Redo,
+
+        [switch] $ForceThreads
     )
 
     $CommandLine = @()
@@ -201,6 +206,11 @@ function Invoke-Raxml
 
     if ($Redo) {
         $CommandLine += "--redo"
+    }
+
+    if ($ForceThreads) {
+        $CommandLine += "--force"
+        $CommandLine += "perf_threads"
     }
 
     Invoke-OnLinux -Path (Get-RaxmlPath) $CommandLine
