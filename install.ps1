@@ -12,3 +12,6 @@
 
 "Installing typst..."
 & modules/typst/install.ps1
+
+"Installing muscle..."
+& modules/muscle/install.ps1

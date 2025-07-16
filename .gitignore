@@ -10,3 +10,4 @@ modules/treestats/R
 modules/newick/newick
 modules/raxml/raxml-ng-2
 modules/consel/bin
+modules/muscle/bin
