@@ -8,3 +8,9 @@ $NEWICK_URL = "https://github.com/rcedgar/newick/releases/download/v1.0.1429/new
 
 $MUSCLE_URL = "https://github.com/rcedgar/muscle"
 $MUSCLE_COMMIT = "cfc3eeedb98fa9cc9bd5b32c2edad95ae0416725"
+
+if ($IsWindows) {
+    $USEARCH_URL = "https://github.com/rcedgar/usearch12/releases/download/v12.0-beta1/usearch_win_12.0-beta.exe"
+} elseif ($IsLinux) {
+    $USEARCH_URL = "https://github.com/rcedgar/usearch12/releases/download/v12.0-beta1/usearch_linux_x86_12.0-beta"
+}
