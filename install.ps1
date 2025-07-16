@@ -15,3 +15,6 @@
 
 "Installing muscle..."
 & modules/muscle/install.ps1
+
+"Installing usearch..."
+& modules/usearch/install.ps1
