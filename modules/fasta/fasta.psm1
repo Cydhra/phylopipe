@@ -69,6 +69,101 @@ function Export-MultiFasta {
 
 <#
  .SYNOPSIS
+ Generates a copy of a given MSA and removes all singleton sites from it.
+
+ .PARAMETER KeepMonomorphic
+ If true, does not remove monomorphic sites (i.e. sites which have no mutation at all)
+#>
+function Remove-SingletonSites {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Hashtable] $Msa,
+
+        [switch] $KeepMonomorphic
+    )
+
+    $Headers = @()
+    $Sequences = @()
+    $Result = @{}
+
+    # Extract sequences into convenient array
+    foreach ($entry in $Msa.GetEnumerator()) {
+        $Headers += $entry.Key
+        $Result[$entry.Key] = ""
+
+        if ($Sequences.Count -gt 0) {
+            if ($Sequences[0].Length -ne $entry.Value.Length) {
+                Write-Error "MSA sequences differ in length"
+                Return
+            }
+        }
+
+        $Sequences += $entry.Value
+    }
+
+    if ($Sequences.Count -eq 0) {
+        Return @{}
+    }
+
+    # check all sites
+    $Range = 0..($Sequences[0].Length - 1)
+    $RemovedSites = 0
+    foreach ($Site in $Range) {
+        # check if it is a singleton
+        $CharacterCounts = @{}
+
+        # count character states
+        foreach ($Sequence in $Sequences) {
+            $Char = $Sequence[$Site]
+            if ($CharacterCounts.ContainsKey($Char)) {
+                $CharacterCounts[$Char] += 1
+            } else {
+                $CharacterCounts[$Char] = 1
+            }
+
+            if ($CharacterCounts.Keys.Count -gt 2) {
+                break
+            } else {
+                if (($CharacterCounts.GetEnumerator() | Where-Object { ($_.Key -ne "-") -and ($_.Value -gt 1) } | Measure-Object).Count -gt 1) {
+                    break
+                }
+            }
+        }
+
+        if ($CharacterCounts.Count -eq 1 -and (-not $KeepMonomorphic)) {
+            # Monomorphic site encountered
+            $RemovedSites += 1
+            continue
+        }
+
+        if ($CharacterCounts.Count -eq 2 -and (-not $KeepMonomorphic)) {
+            if ($CharacterCounts -contains "-") {
+                # Monomorphic site encountered, because the rest is gaps
+                $RemovedSites += 1
+                continue
+            }
+        }
+
+        if ($CharacterCounts.Count -eq 2) {
+            if (($CharacterCounts.GetEnumerator() | Where-Object { $_.Value -gt 1 } | Measure-Object).Count -lt 2) {
+                # singleton site encountered
+                $RemovedSites += 1
+                continue
+            }
+        }
+
+        # append sites to final sequences
+        foreach ($Index in 0..($Headers.Count - 1)) {
+            $Result[$Headers[$Index]] += $Sequences[$Index][$Site]
+        }
+    }
+
+    Write-Host "Removed $RemovedSites Sites."
+    Return $Result
+}
+
+<#
+ .SYNOPSIS
  Projects the alignment of a given MSA onto an unaligned Multi-FASTA file with the same taxa.
 
  .DESCRIPTION
