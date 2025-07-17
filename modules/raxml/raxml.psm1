@@ -75,6 +75,9 @@ function Get-RaxmlPath
 
  .PARAMETER ForceThreads
  Switch to force raxml considers it a waste of resources
+
+ .PARAMETER ManualArgs
+ All arguments not matched to previous parameters are appended to the RAxML command verbatim.
 #>
 function Invoke-Raxml
 {
@@ -128,7 +131,10 @@ function Invoke-Raxml
 
         [switch] $Redo,
 
-        [switch] $ForceThreads
+        [switch] $ForceThreads,
+
+        [Parameter(Mandatory = $false, ValueFromRemainingArguments)]
+        [string[]] $ManualArgs
     )
 
     $CommandLine = @()
@@ -212,6 +218,8 @@ function Invoke-Raxml
         $CommandLine += "--force"
         $CommandLine += "perf_threads"
     }
+
+    $ManualArgs | ForEach-Object { $CommandLine += $_ }
 
     Invoke-OnLinux -Path (Get-RaxmlPath) $CommandLine
 }
