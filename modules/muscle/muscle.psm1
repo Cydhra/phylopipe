@@ -261,7 +261,17 @@ function Get-Dispersion {
         [string] $Ensemble
     )
 
-    Invoke-OnLinux -Path (Get-Muscle) "-disperse" "$(ConvertTo-LinuxPath -Path $Ensemble)"
+    $Output = (Invoke-OnLinux -Path (Get-Muscle) "-disperse" "$(ConvertTo-LinuxPath -Path $Ensemble)") 2>&1
+    foreach ($line in $Output) {
+        if ($line -match '.*D_LP=(\d\.\d*) D_Cols=(\d\.\d*)') {
+            Return [PSCustomObject]@{
+                LetterPairDispersion = $Matches[1]
+                ColumnDispersion = $Matches[2]
+            }
+        }
+    }
+
+    Return $null
 }
 
 Export-ModuleMember -Function New-Alignment
