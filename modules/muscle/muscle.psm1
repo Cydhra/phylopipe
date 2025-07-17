@@ -228,8 +228,10 @@ function New-Ensemble {
         $CommandLine += $PerturbSeed
     }
 
-    $CommandLine += "-perm"
-    $CommandLine += "all"
+    if ($Super5) {
+        $CommandLine += "-perm"
+        $CommandLine += "all"
+    }
 
     $CommandLine += "-output"
     $CommandLine += $(ConvertTo-LinuxPath -Path $Output)
