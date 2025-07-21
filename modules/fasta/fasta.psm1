@@ -405,3 +405,58 @@ function ConvertTo-AlignmentProjection {
 
     return $ProjectedAlignment
 }
+
+<#
+ .SYNOPSIS
+ Append the sequences of one MSA to the corresponding sequences of a second MSA.
+
+ .DESCRIPTION
+ Merge two MSAs by appending all sequences of the second MSA to corresponding sequences in the first MSA.
+ If the second MSA contains more sequences, they are ignored. If the first MSA contains sequences not present in
+ the second, the function returns `$null` and prints an Error. Both parameters are not mutated, the return value
+ is a new HashTable.
+
+
+#>
+function Merge-Msa {
+    param(
+        [Parameter(Mandatory = $true, ParameterSetName = "first_map_second_map")]
+        [Parameter(Mandatory = $true, ParameterSetName = "first_map_second_file")]
+        [System.Collections.Hashtable] $Msa,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "first_file_second_map")]
+        [Parameter(Mandatory = $true, ParameterSetName = "first_file_second_file")]
+        [string] $MsaPath,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "first_map_second_map")]
+        [Parameter(Mandatory = $true, ParameterSetName = "first_file_second_map")]
+        [System.Collections.Hashtable] $Second,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "first_map_second_file")]
+        [Parameter(Mandatory = $true, ParameterSetName = "first_file_second_file")]
+        [string] $SecondPath
+    )
+
+    # read in MSAs
+    if ($PSCmdlet.ParameterSetName.StartsWith("first_file")) {
+        $Msa = Import-MultiFasta -Path $MsaPath
+    }
+
+    if ($PSCmdlet.ParameterSetName.EndsWith("second_file")) {
+        $Second = Import-MultiFasta -Path $SecondPath
+    }
+
+    $FinalMsa = @{}
+
+    foreach ($entry in $Msa.GetEnumerator()) {
+        if (-not ($Second.ContainsKey($entry.Key))) {
+            Write-Error "Second MSA does not contain $($entry.Key)."
+            Return $null
+        }
+
+        $FinalMsa[$entry.Key] = $entry.Value
+        $FinalMsa[$entry.Key] += $Second[$entry.Key]
+    }
+
+    Return $FinalMsa
+}
