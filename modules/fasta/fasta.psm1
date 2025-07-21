@@ -45,7 +45,7 @@ function ConvertFrom-MultiFasta {
     )
 
     $SequenceMap = @{}
-    $Entries = $FileContent -split '(?=\n>[^>]+)'
+    $Entries = $Fasta -split '(?=\n>[^>]+)'
 
     $Entries | ForEach-Object {
         $Data = ($_ -split '\r?\n') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }
