@@ -161,7 +161,7 @@ function ConvertFrom-EnsembleFasta {
     $EnsembleEntries | ForEach-Object {
         $EnsembleData = ($_ -split '\r?\n') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }
         $EnsembleDescriptor = $EnsembleData[0]
-        $EnsembleData = $EnsembleData[1..($EnsembleData.Length - 1)] -join ""
+        $EnsembleData = $EnsembleData[1..($EnsembleData.Length - 1)] -join "`n"
 
         $SequenceMap = ConvertFrom-MultiFasta -Fasta $EnsembleData
         $EnsembleMap[$EnsembleDescriptor] = $SequenceMap
