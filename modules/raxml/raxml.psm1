@@ -107,7 +107,7 @@ function Invoke-Raxml
 
         [string] $Tree,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [string] $Prefix,
 
         [ValidateSet("linked", "scaled", "unlinked", IgnoreCase = $true)]
