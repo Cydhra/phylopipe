@@ -197,8 +197,10 @@ function Invoke-Raxml
         $CommandLine += (ConvertTo-LinuxPath -Path $SiteWeights)
     }
 
-    $CommandLine += "--prefix"
-    $CommandLine += (ConvertTo-LinuxPath -Path $Prefix)
+    if ($Prefix -ne "") {
+        $CommandLine += "--prefix"
+        $CommandLine += (ConvertTo-LinuxPath -Path $Prefix)
+    }
 
     if ($Threads -gt 0) {
         $CommandLine += "--threads"
