@@ -25,7 +25,7 @@ Invoke-OnLinux -Path dos2unix ./build_linux.bash
 Invoke-OnLinux -Path /usr/bin/env bash ./build_linux.bash
 Pop-Location
 
-Copy-Item ./bin/muscle ../bin/muscle
+Copy-Item ./bin/muscle ../$INSTALL_DIR/muscle
 
 Write-Host "Cleaning up..."
 Pop-Location
