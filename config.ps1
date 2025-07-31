@@ -4,7 +4,8 @@ $RAXML_URL = "https://github.com/amkozlov/raxml-ng"
 $RAXML_BRANCH = "dev"
 $RAXML_COMMIT = "11dc3c49efdc0f8462180688f4fad3a78fc71114"
 
-$NEWICK_URL = "https://github.com/rcedgar/newick/releases/download/v1.0.1429/newick_v1.0.1429_linux"
+$NEWICK_URL = "https://github.com/rcedgar/newick"
+$NEWICK_COMMIT = "83701cb4040ac5d364eb1403c7732af4f900d6bf"
 
 $MUSCLE_URL = "https://github.com/rcedgar/muscle"
 $MUSCLE_COMMIT = "cfc3eeedb98fa9cc9bd5b32c2edad95ae0416725"
