@@ -28,6 +28,41 @@ function ConvertTo-LinuxPath {
 }
 
 <#
+ .SYNOPSIS
+ Converts the line endings of a file to unix line endings.
+
+ .DESCRIPTION
+ Reads in a file and replaces all occurences of CRLF with LF. The file is read into memory at once and the file
+ encoding is not respected, instead it is replaced with the default encoding for the current session. The
+ `-Encoding` flag can be set to change the encoding.
+
+ .PARAMETER Path
+ A native path
+
+ .PARAMETER Encoding
+ If set, the file encoding is set to the desired encoding. If not set, the file encoding is set to the default
+ encoding of powershell. In neither case the file encoding of the input file is respected.
+#>
+function ConvertTo-UnixLineEnding {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $Path,
+
+        [Parameter(Mandatory = $false)]
+        [string] $Encoding = ""
+    )
+
+    $ToReplace = "`r`n"
+    $With = "`n"
+
+    if ("" -eq $Encoding) {
+        (Get-Content -Raw $Path).Replace($ToReplace, $With) | Set-Content -Path $Path -NoNewline
+    } else {
+        (Get-Content -Raw $Path).Replace($ToReplace, $With) | Set-Content -Path $Path -NoNewline -Encoding $Encoding
+    }
+}
+
+<#
 .SYNOPSIS
 Execute a provided command line on linux.
 
