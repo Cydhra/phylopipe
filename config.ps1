@@ -10,6 +10,9 @@ $NEWICK_COMMIT = "83701cb4040ac5d364eb1403c7732af4f900d6bf"
 $MUSCLE_URL = "https://github.com/rcedgar/muscle"
 $MUSCLE_COMMIT = "cfc3eeedb98fa9cc9bd5b32c2edad95ae0416725"
 
+$RESEEK_URL = "https://github.com/rcedgar/reseek"
+$RESEEK_COMMIT = "d13dfa15205816994a5d904765a17e48060bf8d4"
+
 if ($IsWindows) {
     $USEARCH_URL = "https://github.com/rcedgar/usearch12/releases/download/v12.0-beta1/usearch_win_12.0-beta.exe"
 } elseif ($IsLinux) {

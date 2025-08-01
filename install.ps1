@@ -18,3 +18,6 @@
 
 "Installing usearch..."
 & modules/usearch/install.ps1
+
+"Installing reseek..."
+& modules/reseek/install.ps1
