@@ -21,7 +21,7 @@ git checkout $MUSCLE_COMMIT
 Push-Location src
 
 Write-Host "Running build script..."
-Invoke-OnLinux -Path dos2unix ./build_linux.bash
+ConvertTo-UnixLineEnding -Path ./build_linux.bash
 Invoke-OnLinux -Path /usr/bin/env bash ./build_linux.bash
 Pop-Location
 
