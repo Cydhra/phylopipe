@@ -177,7 +177,7 @@ function New-Ensemble {
         [Parameter(Mandatory = $true, ParameterSetName = "super5")]
         [switch] $Super5,
 
-        [Parameter(Mandatory = $false, ParameterSetName = "super5")]
+        [Parameter(Mandatory = $false)]
         [int] $PerturbSeed = 0,
 
         [ValidateSet("stratified", "diversified", IgnoreCase = $false)]
@@ -200,6 +200,12 @@ function New-Ensemble {
         [Parameter(Mandatory = $false)]
         [int] $Threads = 0
     )
+
+    function New-TemporaryDirectory {
+        $parent = [System.IO.Path]::GetTempPath()
+        $name = [System.IO.Path]::GetRandomFileName()
+        New-Item -ItemType Directory -Path ([System.IO.Path]::Combine($parent,  $name))
+    }
 
     if (-not $Super5) {
         $PPP = $true
@@ -231,12 +237,40 @@ function New-Ensemble {
     if ($Super5) {
         $CommandLine += "-perm"
         $CommandLine += "all"
+
+        $Temp = New-TemporaryDirectory
+
+        foreach ($i in 0..3) {
+            $Prefix = [System.IO.Path]::Combine($Temp, "alignment$i.@.fa")
+
+            $SpecialCommand = $CommandLine
+            $SpecialCommand += "-output"
+            $SpecialCommand += $(ConvertTo-LinuxPath -Path $Prefix)
+            $SpecialCommand += "-perturb"
+            $SpecialCommand += "$i"
+
+            Invoke-OnLinux -Path (Get-Muscle) $SpecialCommand
+        }
+
+        $FileList = New-TemporaryFile
+        Get-ChildItem -File $Temp | ForEach-Object { $_.Name } | Set-Content $FileList
+
+        # temporarily move into the tempfolder so fa2efa doesnt print full path names into the ensemble
+        $TmpOutput = "tmp.efa"
+        Push-Location $Temp
+        Invoke-OnLinux -Path (Get-Muscle) "-fa2efa" "$(ConvertTo-LinuxPath -Path $FileList)" "-output" "$(ConvertTo-LinuxPath -Path $TmpOutput)"
+        Pop-Location
+
+        # move target file to final location
+        Copy-Item ([System.IO.Path]::Combine($Temp, $TmpOutput)) -Destination $Output
+
+        Remove-Item -Recurse $Temp
+        Remove-Item $FileList
+    } else {
+        $CommandLine += "-output"
+        $CommandLine += $(ConvertTo-LinuxPath -Path $Output)
+        Invoke-OnLinux -Path (Get-Muscle) $CommandLine
     }
-
-    $CommandLine += "-output"
-    $CommandLine += $(ConvertTo-LinuxPath -Path $Output)
-
-    Invoke-OnLinux -Path (Get-Muscle) $CommandLine
 }
 
 <#
