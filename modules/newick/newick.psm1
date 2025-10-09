@@ -178,8 +178,40 @@ function Get-LcaSubtrees {
     Invoke-OnLinux (Get-NewickPath) -getlcasubtrees (ConvertTo-LinuxPath $Tree) -features (ConvertTo-LinuxPath $FeatureFile) -fevout (ConvertTo-LinuxPath $OutputFile)
 }
 
+<#
+ .SYNOPSIS
+ Condense a tree until only a minimal spanning tree of the taxonomic rank given as the feature file is left.
+
+ .DESCRIPTION
+ Invokes the `-condense` option of the Newick tool to compute the nodes most likely identifying a clade given
+ in the feature file, and then output the tree that spans only those clade roots.
+
+ .PARAMETER Tree
+ Path to a newick tree file.
+
+ .PARAMETER FeatureFile
+ Path to a tsv file, containing two columns, the first containing leaf labels, the second a taxonomic rank for each
+ leaf.
+
+ .PARAMETER OutputFile
+ Path to the newick output file
+#>
+function Get-CondensedTree {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $Tree,
+
+        [Parameter(Mandatory = $true)]
+        [string] $FeatureFile,
+
+        [Parameter(Mandatory = $true)]
+        [string] $OutputFile
+    )
+}
+
 Export-ModuleMember -Function Get-RFDistance
 Export-ModuleMember -Function Convert-TreeToTsv
 Export-ModuleMember -Function Get-NodeLabels
 Export-ModuleMember -Function Get-TaxonomicAccuracy
 Export-ModuleMember -Function Get-LcaSubtrees
+Export-ModuleMember -Function Get-CondensedTree
