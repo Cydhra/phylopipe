@@ -144,7 +144,42 @@ function Get-TaxonomicAccuracy {
     Invoke-OnLinux (Get-NewickPath) -tax (ConvertTo-LinuxPath $Tree) -features (ConvertTo-LinuxPath $FeatureFile) -fevout (ConvertTo-LinuxPath $OutputFile)
 }
 
+<#
+ .SYNOPSIS
+ Try and identify the LCA nodes to clades given in a feature file.
+
+ .DESCRIPTION
+ Invokes the `-getlcasubtrees` option of the Newick tool to compute the nodes most likely identifying a clade given
+ in the feature file, and then output the subtrees underneath those nodes.
+
+ .PARAMETER Tree
+ Path to a newick tree file.
+
+ .PARAMETER FeatureFile
+ Path to a tsv file, containing two columns, the first containing leaf labels, the second a taxonomic rank for each
+ leaf.
+
+ .PARAMETER OutputFile
+ Path to the fev file where newick will write the subtrees into.
+#>
+function Get-LcaSubtrees {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $Tree,
+
+        [Parameter(Mandatory = $true)]
+        [string] $FeatureFile,
+
+        [Parameter(Mandatory = $true)]
+        [string] $OutputFile
+    )
+
+    ConvertTo-UnixLineEnding -Path $FeatureFile -Encoding 'ascii'
+    Invoke-OnLinux (Get-NewickPath) -getlcasubtrees (ConvertTo-LinuxPath $Tree) -features (ConvertTo-LinuxPath $FeatureFile) -fevout (ConvertTo-LinuxPath $OutputFile)
+}
+
 Export-ModuleMember -Function Get-RFDistance
 Export-ModuleMember -Function Convert-TreeToTsv
 Export-ModuleMember -Function Get-NodeLabels
 Export-ModuleMember -Function Get-TaxonomicAccuracy
+Export-ModuleMember -Function Get-LcaSubtrees
