@@ -207,6 +207,9 @@ function Get-CondensedTree {
         [Parameter(Mandatory = $true)]
         [string] $OutputFile
     )
+
+    ConvertTo-UnixLineEnding -Path $FeatureFile -Encoding 'ascii'
+    Invoke-OnLinux (Get-NewickPath) -condense (ConvertTo-LinuxPath $Tree) -features (ConvertTo-LinuxPath $FeatureFile) -fevout (ConvertTo-LinuxPath $OutputFile)
 }
 
 Export-ModuleMember -Function Get-RFDistance
