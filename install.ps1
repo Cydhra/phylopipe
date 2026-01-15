@@ -21,3 +21,9 @@
 
 "Installing reseek..."
 & modules/reseek/install.ps1
+
+"Installing IQTree..."
+& modules/iqtree/install.ps1
+
+"Installing AliSim..."
+& modules/alisim/install.ps1
