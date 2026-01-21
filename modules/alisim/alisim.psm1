@@ -17,6 +17,9 @@ function Get-IqTreePath {
  .PARAMETER Prefix
  Output file prefix. All generated files will be named with this prefix, allowing a directory and name-prefix to
  be defined.
+
+ .PARAMETER Length
+ Length of the generated alignment.
 #>
 function New-SimulatedMsa {
     param(
@@ -33,11 +36,14 @@ function New-SimulatedMsa {
         [ValidateSet("BIN", "DNA", "AA", "NT2AA", "CODON", "MORPH", IgnoreCase = $false)]
         [string] $SequenceType,
 
-        [Parameter(ParameterSetName="Indel")]
+        [Parameter(Mandatory = $false)]
         [float] $InsertionRate = -1.0,
 
-        [Parameter(ParameterSetName="Indel")]
+        [Parameter(Mandatory = $false)]
         [float] $DeletionRate = -1.0,
+
+        [Parameter(Mandatory = $false)]
+        [int] $Length = 1000,
 
         [Parameter(Mandatory = $false)]
         [int] $Seed
@@ -54,6 +60,9 @@ function New-SimulatedMsa {
     $CommandLine += $Model
     $CommandLine += "-t"
     $CommandLine += $LinuxTree
+
+    $CommandLine += "--length"
+    $CommandLine += $Length
 
     if ($SequenceType -ne "") {
         $CommandLine += "--seqtype"
