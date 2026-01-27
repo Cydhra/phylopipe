@@ -18,3 +18,5 @@ if ($IsWindows) {
 } elseif ($IsLinux) {
     $USEARCH_URL = "https://github.com/rcedgar/usearch12/releases/download/v12.0-beta1/usearch_linux_x86_12.0-beta"
 }
+
+$IQTREE_URL = "https://github.com/iqtree/iqtree3/releases/download/v3.0.1/iqtree-3.0.1-Linux-intel.tar.gz"
