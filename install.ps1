@@ -1,3 +1,6 @@
+"Installing conda..."
+& modules/conda/install.ps1
+
 "Installing RAxML..."
 & modules/raxml/install.ps1
 
