@@ -30,3 +30,6 @@
 
 "Installing AliSim..."
 & modules/alisim/install.ps1
+
+"Installing MongoDB..."
+& modules/mongodb/install.ps1
