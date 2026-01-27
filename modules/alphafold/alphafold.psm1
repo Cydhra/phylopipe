@@ -64,8 +64,13 @@ function Get-UniprotEntry {
  .PARAMETER AlphafoldUrl
  Url to the structure file to download.
 
- .PARAMETER Path
- File path where to store the downloaded file.
+ .PARAMETER Directory
+ Directory where to store the downloaded file.
+
+ .OUTPUTS [Object[]]
+ An array of hashtables containing the metadata returned by the AlphaFold API for the given accession.
+ If the AlphaFold entry does not exist, returns an empty object.
+ The filename of the downloaded path is equal to the filename of the remote file.
 #>
 function Get-AlphaFoldStructure {
     param(
@@ -84,8 +89,7 @@ function Get-AlphaFoldStructure {
     )
 
     if ($Accession) {
-        $MetaUrl = $ALPHAFOLD_API_PATTERN -f $Accession
-        $Metadata = curl --silent $MetaUrl | ConvertFrom-Json
+        $Metadata = Get-AlphaFoldEntry $Accession
 
         if ($FileType -ieq "bcif") {
             $AlphafoldUrl = $Metadata.bcifUrl
