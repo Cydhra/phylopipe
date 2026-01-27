@@ -23,5 +23,5 @@ function Invoke-InConda {
 
     $CondaInstallation = "$PSScriptRoot/miniconda3/bin/activate"
     $CondaPath = ConvertTo-LinuxPath $CondaInstallation
-    Invoke-OnLinux source $CondaPath "&&" @ManualArgs
+    Invoke-OnLinux source $CondaPath "&&" conda activate phylopipe "&&" @ManualArgs
 }
