@@ -26,7 +26,7 @@ Invoke-OnLinux ./Miniconda3-latest-Linux-x86_64.sh "-b" "-f" "-p" ./miniconda3
 Invoke-OnLinux source miniconda3/bin/activate "&&" `
     conda tos accept "--override-channels" "--channel" "https://repo.anaconda.com/pkgs/main" "&&" `
     conda tos accept "--override-channels" "--channel" "https://repo.anaconda.com/pkgs/r" "&&" `
-    conda create "-f" "phylopipe.yml"
+    conda env create "-f" "phylopipe.yml"
 
 Remove-Item ./Miniconda3-latest-Linux-x86_64.sh
 
