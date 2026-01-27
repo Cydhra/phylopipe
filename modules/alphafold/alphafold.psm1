@@ -89,7 +89,7 @@ function Get-AlphaFoldStructure {
     )
 
     if ($Accession) {
-        $Metadata = Get-AlphaFoldEntry $Accession
+        $Metadata = (Get-AlphaFoldEntry $Accession)[0]
 
         if ($FileType -ieq "bcif") {
             $AlphafoldUrl = $Metadata.bcifUrl
