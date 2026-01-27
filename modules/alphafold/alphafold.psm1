@@ -85,7 +85,7 @@ function Get-AlphaFoldStructure {
         [string] $AlphafoldUrl,
 
         [Parameter(Mandatory = $true, Position=1)]
-        [string] $Path
+        [string] $Directory
     )
 
     if ($Accession) {
@@ -105,7 +105,7 @@ function Get-AlphaFoldStructure {
         Return $Metadata
     }
 
-    curl --silent $AlphafoldUrl --output $Path
+    curl $AlphafoldUrl --output-dir $Directory --remote-name --silent
     Return $Metadata
 }
 
