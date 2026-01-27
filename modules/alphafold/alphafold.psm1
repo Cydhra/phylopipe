@@ -101,11 +101,12 @@ function Get-AlphaFoldStructure {
     }
 
     if (-not $AlphafoldUrl) {
-        Write-Error "No URL found for alphafold structure"
-        Return
+        Write-Error "No URL found for alphafold structure for accession $Accession"
+        Return $Metadata
     }
 
     curl --silent $AlphafoldUrl --output $Path
+    Return $Metadata
 }
 
 Export-ModuleMember -Function Get-AlphaFoldEntry
