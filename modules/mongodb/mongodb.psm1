@@ -11,9 +11,7 @@ $LOGPATH="$DB_PATH\mongod.log"
  Starts the mongod process in a new process to allow it running in the background until Stop-Mongo is called.
 #>
 function Start-Mongo {
-    . (Get-CondaHook)
-    $Environ = Get-CondaEnvironment
-    conda activate $Environ
+    Set-CondaEnvironment
     Start-Process -NoNewWindow mongod -ArgumentList "--logpath $LOGPATH --dbpath $DB_PATH --bind_ip 127.0.0.1 --noauth"
 }
 
