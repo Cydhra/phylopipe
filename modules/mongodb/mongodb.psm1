@@ -12,7 +12,8 @@ $LOGPATH="$DB_PATH\mongod.log"
 #>
 function Start-Mongo {
     . (Get-CondaHook)
-    conda activate (Get-CondaEnvironment)
+    $Environ = Get-CondaEnvironment
+    conda activate $Environ
     Start-Process -NoNewWindow mongod -ArgumentList "--logpath $LOGPATH --dbpath $DB_PATH --bind_ip 127.0.0.1 --noauth"
 }
 
