@@ -11,7 +11,7 @@ function Import-Collection {
         [string[]]$upsert_fields
     )
 
-    Import-Mongo $database $name -- --parseGrace skipRow --type csv --mode upsert --upsertFields ($upsert_fields -join ",") --headerline $file
+    Import-MongoData $database $name -- --parseGrace skipRow --type csv --mode upsert --upsertFields ($upsert_fields -join ",") --headerline $file
 }
 
 Start-Mongo

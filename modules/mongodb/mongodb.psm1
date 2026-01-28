@@ -36,7 +36,7 @@ function Stop-Mongo {
  .PARAMETER Collection
  Name of the collection where to import data.
 #>
-function Import-Mongo {
+function Import-MongoData {
     param(
         [Parameter(Mandatory = $true)]
         [string] $Database,
