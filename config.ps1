@@ -15,10 +15,10 @@ $RESEEK_COMMIT = "d13dfa15205816994a5d904765a17e48060bf8d4"
 
 if ($IsWindows) {
     $USEARCH_URL = "https://github.com/rcedgar/usearch12/releases/download/v12.0-beta1/usearch_win_12.0-beta.exe"
+    $CONDA_INSTALLER = "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe"
 } elseif ($IsLinux) {
     $USEARCH_URL = "https://github.com/rcedgar/usearch12/releases/download/v12.0-beta1/usearch_linux_x86_12.0-beta"
+    $CONDA_INSTALLER = "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
 }
-
-$CONDA_INSTALLER = "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
 
 $IQTREE_URL = "https://github.com/iqtree/iqtree3/releases/download/v3.0.1/iqtree-3.0.1-Linux-intel.tar.gz"

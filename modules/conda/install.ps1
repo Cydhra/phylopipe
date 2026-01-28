@@ -1,33 +1,34 @@
 Push-Location $PSScriptRoot
 
-if (Test-Path "miniconda3/bin/activate") {
+if (Test-Path "miniconda3") {
     Write-Host "conda is already installed"
     Pop-Location
     exit
 }
 
-Import-Module $PSScriptRoot/../linux
-
 # load config
 . ..\..\config.ps1
 
-if (-not (Test-Path "./Miniconda3-latest-Linux-x86_64.sh")) {
-    Invoke-OnLinux wget $CONDA_INSTALLER
+if ($IsWindows) {
+    if (-not (Test-Path "miniconda3.exe")) {
+        curl $CONDA_INSTALLER --output "miniconda3.exe"
+    }
+
+    Start-Process -Wait "miniconda3.exe" -ArgumentList "/S /D=$PSScriptRoot\miniconda3"
+} else {
+    if (-not (Test-Path "miniconda3.sh")) {
+        curl $CONDA_INSTALLER --output "miniconda3.sh"
+    }
+
+    New-Item -ItemType Directory -ErrorActthe ion SilentlyContinue miniconda3 > $null
+    & ./miniconda3.sh "-b" "-f" "-p" ./miniconda3
 }
 
-New-Item -ItemType Directory -ErrorAction SilentlyContinue miniconda3 > $null
+Import-Module $PSScriptRoot/../conda
 
-# set directory to case sensitive to prevent dumb packages (ncurses) from crashing
-fsutil.exe file setCaseSensitiveInfo miniconda3 enable
-
-Invoke-OnLinux chmod u+x ./Miniconda3-latest-Linux-x86_64.sh
-Invoke-OnLinux ./Miniconda3-latest-Linux-x86_64.sh "-b" "-f" "-p" ./miniconda3
-
-Invoke-OnLinux source miniconda3/bin/activate "&&" `
-    conda tos accept "--override-channels" "--channel" "https://repo.anaconda.com/pkgs/main" "&&" `
-    conda tos accept "--override-channels" "--channel" "https://repo.anaconda.com/pkgs/r" "&&" `
-    conda env create "-f" "phylopipe.yml"
-
-Remove-Item ./Miniconda3-latest-Linux-x86_64.sh
+Invoke-InConda -- conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+Invoke-InConda -- conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+Invoke-InConda -- conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/msys2
+Invoke-InConda -- conda env create -f phylopipe.yml
 
 Pop-Location
