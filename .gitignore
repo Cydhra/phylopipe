@@ -11,5 +11,8 @@ modules/newick/newick
 modules/raxml/raxml-ng-2
 modules/*/bin
 
+# Conda Binaries
+modules/conda/miniconda3
+
 # User Data
 modules/*/data
