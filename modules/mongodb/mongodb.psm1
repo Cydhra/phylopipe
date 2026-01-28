@@ -1,6 +1,6 @@
 Import-Module $PSScriptRoot/../conda
 
-$DB_PATH = "$PSScriptRoot\mongodata"
+$DB_PATH = "$PSScriptRoot\data"
 $LOGPATH="$DB_PATH\mongod.log"
 
 <#

@@ -10,3 +10,6 @@ modules/treestats/R
 modules/newick/newick
 modules/raxml/raxml-ng-2
 modules/*/bin
+
+# User Data
+modules/*/data

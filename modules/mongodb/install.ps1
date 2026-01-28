@@ -1,6 +1,6 @@
 Push-Location $PSScriptRoot
 
-if (Test-Path "mongodata") {
+if (Test-Path "data") {
     Write-Host "mongodb is already installed"
     Pop-Location
     exit
@@ -12,4 +12,4 @@ if (Test-Path "mongodata") {
 Import-Module $PSScriptRoot/../conda
 Invoke-InConda -- conda install -y anaconda::mongodb conda-forge::mongo-tools
 
-New-Item "mongodata" -ItemType Directory
+New-Item "data" -ItemType Directory
