@@ -62,3 +62,22 @@ function Import-MongoConfiguration {
 
     Invoke-InConda -- mongosh --eval "load(`"$Path`");"
 }
+
+<#
+ .SYNOPSIS
+ Run a command in the mongo shell.
+
+ .DESCRIPTION
+ Calls mongosh with the provided command line.
+
+ .PARAMETER Args
+ Arguments that get passed through to mongosh.
+#>
+function Invoke-MongoSh {
+    param(
+        [Parameter(Mandatory = $false, ValueFromRemainingArguments)]
+        [string[]] $Args
+    )
+
+    Invoke-InConda -- mongosh @Args
+}
