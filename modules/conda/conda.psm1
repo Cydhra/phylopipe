@@ -1,7 +1,16 @@
 Import-Module $PSScriptRoot/../linux
 
 function Get-CondaHook {
-     Return "$PSScriptRoot/miniconda3/shell/condabin/conda-hook.ps1"
+#     Return "$PSScriptRoot/miniconda3/shell/condabin/conda-hook.ps1"
+    Return "$env:APPDATA/../Local/miniconda3/shell/condabin/conda-hook.ps1"
+}
+
+<#
+ .SYNOPSIS
+ Get the name of the conda activate which is activated with conda activate when the hook has been loaded.
+#>
+function Get-CondaEnvironment {
+    Return "phylopipe"
 }
 
 <#
@@ -30,7 +39,7 @@ function Invoke-InConda {
 
     $CondaHook = Get-CondaHook
     . $CondaHook
-    conda activate phylopipe
+    conda activate (Get-CondaEnvironment)
 
     & $Command @Args
 }
