@@ -1,5 +1,31 @@
 Import-Module $PSScriptRoot/../conda
 
+$DB_PATH = "$PSScriptRoot\mongodata"
+$LOGPATH="$DB_PATH\mongod.log"
+
+<#
+ .SYNOPSIS
+ Start a mongodb database process with the phylopipe database
+
+ .DESCRIPTION
+ Starts the mongod process in a new process to allow it running in the background until Stop-Mongo is called.
+#>
+function Start-Mongo {
+    . (Get-CondaHook)
+    Start-Process -NoNewWindow mongod -ArgumentList "--logpath $LOGPATH --dbpath $DB_PATH --bind_ip 127.0.0.1 --noauth"
+}
+
+<#
+ .SYNOPSIS
+ Shutdown the mongodb database process.
+
+ .DESCRIPTION
+ Uses the mongoshell to shutdown the mongo server that was previously started with Start-Mongo
+#>
+function Stop-Mongo {
+    Invoke-InConda -- mongosh --eval 'db.getSiblingDB("admin").shutdownServer()'
+}
+
 <#
  .SYNOPSIS
  Imports data into mongodb using mongoimport.
@@ -13,11 +39,14 @@ Import-Module $PSScriptRoot/../conda
 function Import-Mongo {
     param(
         [Parameter(Mandatory = $true)]
+        [string] $Database,
+
+        [Parameter(Mandatory = $true)]
         [string] $Collection,
 
         [Parameter(Mandatory = $false, ValueFromRemainingArguments)]
         [string[]] $Args
     )
 
-    Invoke-InConda mongoimport "--db" "TODO" "--collection" $Collection @Args
+    Invoke-InConda -- mongoimport --db $Database --collection $Collection @Args
 }
