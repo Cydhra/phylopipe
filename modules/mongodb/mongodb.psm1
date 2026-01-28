@@ -52,3 +52,15 @@ function Import-Mongo {
 
     Invoke-InConda -- mongoimport --db $Database --collection $Collection @Args
 }
+
+<#
+ .SYNOPSIS
+ Load a js file with mongosh to modify the database.
+#>
+function Import-MongoConfiguration {
+    param(
+        [string] $Path
+    )
+
+    Invoke-InConda -- mongosh --eval "load(`"$Path`");"
+}
