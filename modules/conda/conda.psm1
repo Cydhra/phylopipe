@@ -9,8 +9,10 @@ function Get-CondaHook {
  .SYNOPSIS
  Get the name of the conda activate which is activated with conda activate when the hook has been loaded.
 #>
-function Get-CondaEnvironment {
-    Return "phylopipe"
+function Set-CondaEnvironment {
+    $CondaHook = Get-CondaHook
+    . $CondaHook
+    conda activate phylopipe
 }
 
 <#
@@ -37,9 +39,7 @@ function Invoke-InConda {
         [string[]] $Args
     )
 
-    $CondaHook = Get-CondaHook
-    . $CondaHook
-    conda activate (Get-CondaEnvironment)
+    Set-CondaEnvironment
 
     & $Command @Args
 }
