@@ -1,5 +1,9 @@
 Import-Module $PSScriptRoot/../linux
 
+function Get-CondaHook {
+     Return "$PSScriptRoot/miniconda3/shell/condabin/conda-hook.ps1"
+}
+
 <#
  .SYNOPSIS
  Execute a provided command line in the conda environment.
@@ -24,7 +28,7 @@ function Invoke-InConda {
         [string[]] $Args
     )
 
-    $CondaHook = "$PSScriptRoot/miniconda3/shell/condabin/conda-hook.ps1"
+    $CondaHook = Get-CondaHook
     . $CondaHook
     conda activate phylopipe
 
