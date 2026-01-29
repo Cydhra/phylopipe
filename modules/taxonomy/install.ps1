@@ -11,8 +11,9 @@ Import-Module $PSScriptRoot/../mongodb
 & ./download.ps1
 
 Start-Mongo
-Import-MongoConfiguration "aggregate_hierarchy.js"
+Import-MongoConfiguration "create_indices.js"
 & ./import.ps1
+Import-MongoConfiguration "aggregate_hierarchy.js"
 
 Pop-Location
 Write-Host "Done."
