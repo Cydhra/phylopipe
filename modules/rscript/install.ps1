@@ -6,6 +6,6 @@ Push-Location $PSScriptRoot
 Import-Module $PSScriptRoot/../conda
 Set-CondaEnvironment
 
-conda install conda-forge::r-base
+conda install -y conda-forge::r-base
 
 Pop-Location
