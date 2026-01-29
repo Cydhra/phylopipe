@@ -1,4 +1,4 @@
-Import-Module $PScriptRoot/../rscript
+Import-Module $PSScriptRoot/../rscript
 
 <#
  .SYNOPSIS
