@@ -65,6 +65,19 @@ Many modules are provided through [conda](https://www.anaconda.com/docs/getting-
 but the `conda` module will download and manage a self-contained conda environment for all conda-dependent
 modules.
 
+## Installation
+Most modules require installation. They contain an `install.ps1` script in their module path.
+The global `install.ps1` script calls all but the most expensive install-scripts to make everything
+available.
+If you want to be able to import the scripts globally, rather than having to specify the file path to the modules,
+run `install_repository.ps1` after running the install-scripts.
+
+After you ran `install_repository.ps1`, you can import any module from anywhere like this:
+
+```ps1
+Import-Module reseek
+```
+
 ## Versions
 There is no versioning system for the modules.
 Most modules fix the version of their software through the `config.ps1` script and I update the version
