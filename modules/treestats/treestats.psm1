@@ -1,52 +1,129 @@
-class Treestats {
+Import-Module $PScriptRoot/../rscript
 
-    static [string] r_script_path() {
-        return [System.IO.Path]::Combine("$PSScriptRoot", "R", "bin", "Rscript.exe")
-    }
+<#
+ .SYNOPSIS
+ Returns the absolute path to the script that invokes treestats in R.
+#>
+function Get-ScriptPath {
+    Return [System.IO.Path]::Combine("$PSScriptRoot", "exec.R")
+}
 
-    static [string] function_path() {
-        return [System.IO.Path]::Combine("$PSScriptRoot", "exec.R")
-    }
+<#
+ .SYNOPSIS
+ Calculate the Mean Pairwise Distance (MPD) for all trees in the provided file.
 
-    # Calculate the mean pairwise distance (MPD) for all trees in a file.
-    static [double[]] mpd([string]$tree_file) {
-        $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "mean_pair_dist" $tree_file 2> $null
-        return $values
-    }
+ .PARAMETER TreeFile
+ Newick file containing one or more trees.
+#>
+function Get-TreeStatMpd {
+    [OutputType([double[]])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $TreeFile
+    )
 
-    # Calculate the treeness (fraction of internal branches) for all trees in a file.
-    static [double[]] treeness([string]$tree_file) {
-        $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "treeness" $tree_file 2> $null
-        return $values
-    }
+    Return (Invoke-R -Path (Get-ScriptPath) -- "mean_pair_dist" TreeFile)
+}
 
-    # Calculate the number of cherries for all trees in a file.
-    static [int[]] cherries([string]$tree_file) {
-        $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "cherries" $tree_file 2> $null
-        return $values
-    }
+<#
+ .SYNOPSIS
+ Calculate the Treeness statistic for all trees in the provided file.
 
-    # Calculate the number of double cherries for all trees in a file.
-    static [int[]] double_cherries([string]$tree_file) {
-        $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "double_cherries" $tree_file 2> $null
-        return $values
-    }
+ .PARAMETER TreeFile
+ Newick file containing one or more trees.
+#>
+function Get-TreeStatTreeness {
+    [OutputType([double[]])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $TreeFile
+    )
 
-    # Calculate the mean branch length for all trees in a file.
-    static [double[]] mean_branch_length([string]$tree_file) {
-        $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "mean_branch_length" $tree_file 2> $null
-        return $values
-    }
+    Return (Invoke-R -Path (Get-ScriptPath) -- "treeness" TreeFile)
+}
 
-    # Calculate the number of steps required to turn a tree into a fully imbalanced tree (a caterpillar).
-    static [int[]] imbalance([string]$tree_file) {
-        $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "imbalance_steps" $tree_file 2> $null
-        return $values
-    }
+<#
+ .SYNOPSIS
+ Calculate the number of Cherries for all trees in the provided file.
 
-    # Calculate the maximum width
-    static [int[]] max_width([string]$tree_file) {
-        $values = & ([Treestats]::r_script_path()) ([Treestats]::function_path()) "max_width" $tree_file 2> $null
-        return $values
-    }
+ .PARAMETER TreeFile
+ Newick file containing one or more trees.
+#>
+function Get-TreeStatCherries {
+    [OutputType([int[]])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $TreeFile
+    )
+
+    Return (Invoke-R -Path (Get-ScriptPath) -- "cherries" TreeFile)
+}
+
+<#
+ .SYNOPSIS
+ Calculate the number of Double Cherries for all trees in the provided file.
+
+ .PARAMETER TreeFile
+ Newick file containing one or more trees.
+#>
+function Get-TreeStatDoubleCherries {
+    [OutputType([int[]])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $TreeFile
+    )
+
+    Return (Invoke-R -Path (Get-ScriptPath) -- "double_cherries" TreeFile)
+}
+
+<#
+ .SYNOPSIS
+ Calculate the Mean Branch Length for all trees in the provided file.
+
+ .PARAMETER TreeFile
+ Newick file containing one or more trees.
+#>
+function Get-TreeStatMeanBranchLength {
+    [OutputType([double[]])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $TreeFile
+    )
+
+    Return (Invoke-R -Path (Get-ScriptPath) -- "mean_branch_length" TreeFile)
+}
+
+<#
+ .SYNOPSIS
+ Calculate the number of Imbalance Steps for all trees in the provided file.
+
+ .PARAMETER TreeFile
+ Newick file containing one or more trees.
+#>
+function Get-TreeStatImbalance {
+    [OutputType([int[]])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $TreeFile
+    )
+
+    Return (Invoke-R -Path (Get-ScriptPath) -- "imbalance_steps" TreeFile)
+}
+
+
+<#
+ .SYNOPSIS
+ Calculate the maximum width for all trees in the provided file.
+
+ .PARAMETER TreeFile
+ Newick file containing one or more trees.
+#>
+function Get-TreeStatMaxWidth {
+    [OutputType([int[]])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $TreeFile
+    )
+
+    Return (Invoke-R -Path (Get-ScriptPath) -- "max_width" TreeFile)
 }
