@@ -19,9 +19,9 @@ function Invoke-R {
         [string] $Path,
 
         [Parameter(Mandatory = $false, ValueFromRemainingArguments)]
-        [string] $Args
+        [string[]] $Args
     )
 
     Set-CondaEnvironment
-    rscript $Path "mean_pair_dist" @Args
+    rscript $Path @Args
 }
