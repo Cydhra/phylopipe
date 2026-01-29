@@ -3,3 +3,5 @@
 
 "# Add phylopipe modules to powershell path. Remove below line to uninstall." | Add-Content $profile
 "`$env:PSModulePath += `";$PSScriptRoot\modules`"" | Add-Content $profile
+
+. $profile
