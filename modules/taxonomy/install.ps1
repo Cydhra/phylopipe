@@ -14,6 +14,7 @@ Start-Mongo
 Import-MongoConfiguration "create_indices.js"
 & ./import.ps1
 Import-MongoConfiguration "aggregate_hierarchy.js"
+Stop-Mongo
 
 Pop-Location
 Write-Host "Done."
