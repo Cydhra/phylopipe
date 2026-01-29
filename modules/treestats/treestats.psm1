@@ -22,7 +22,7 @@ function Get-TreeStatMpd {
         [string] $TreeFile
     )
 
-    Return (Invoke-R -Path (Get-ScriptPath) -- "mean_pair_dist" TreeFile)
+    Return (Invoke-R -Path (Get-ScriptPath) -- "mean_pair_dist" $TreeFile) 2> $null
 }
 
 <#
@@ -39,7 +39,7 @@ function Get-TreeStatTreeness {
         [string] $TreeFile
     )
 
-    Return (Invoke-R -Path (Get-ScriptPath) -- "treeness" TreeFile)
+    Return (Invoke-R -Path (Get-ScriptPath) -- "treeness" $TreeFile) 2> $null
 }
 
 <#
@@ -56,7 +56,7 @@ function Get-TreeStatCherries {
         [string] $TreeFile
     )
 
-    Return (Invoke-R -Path (Get-ScriptPath) -- "cherries" TreeFile)
+    Return (Invoke-R -Path (Get-ScriptPath) -- "cherries" $TreeFile) 2> $null
 }
 
 <#
@@ -73,7 +73,7 @@ function Get-TreeStatDoubleCherries {
         [string] $TreeFile
     )
 
-    Return (Invoke-R -Path (Get-ScriptPath) -- "double_cherries" TreeFile)
+    Return (Invoke-R -Path (Get-ScriptPath) -- "double_cherries" $TreeFile) 2> $null
 }
 
 <#
@@ -90,7 +90,7 @@ function Get-TreeStatMeanBranchLength {
         [string] $TreeFile
     )
 
-    Return (Invoke-R -Path (Get-ScriptPath) -- "mean_branch_length" TreeFile)
+    Return (Invoke-R -Path (Get-ScriptPath) -- "mean_branch_length" $TreeFile) 2> $null
 }
 
 <#
@@ -107,7 +107,7 @@ function Get-TreeStatImbalance {
         [string] $TreeFile
     )
 
-    Return (Invoke-R -Path (Get-ScriptPath) -- "imbalance_steps" TreeFile)
+    Return (Invoke-R -Path (Get-ScriptPath) -- "imbalance_steps" $TreeFile) 2> $null
 }
 
 
@@ -125,5 +125,5 @@ function Get-TreeStatMaxWidth {
         [string] $TreeFile
     )
 
-    Return (Invoke-R -Path (Get-ScriptPath) -- "max_width" TreeFile)
+    Return (Invoke-R -Path (Get-ScriptPath) -- "max_width" $TreeFile) 2> $null
 }
