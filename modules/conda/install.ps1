@@ -24,11 +24,11 @@ if ($IsWindows) {
     & /usr/bin/env bash ./miniconda3.sh "-b" "-f" "-p" ./miniconda3
 }
 
-Import-Module $PSScriptRoot/../conda
+. "$PSScriptRoot/miniconda3/shell/condabin/conda-hook.ps1"
 
-Invoke-InConda -- conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
-Invoke-InConda -- conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
-Invoke-InConda -- conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/msys2
-Invoke-InConda -- conda env create -f phylopipe.yml
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/msys2
+conda env create -f phylopipe.yml
 
 Pop-Location
