@@ -23,5 +23,5 @@ function Invoke-R {
     )
 
     Set-CondaEnvironment
-    rscript $Path @Args
+    Rscript $Path @Args
 }
