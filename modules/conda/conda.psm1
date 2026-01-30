@@ -1,8 +1,7 @@
 Import-Module $PSScriptRoot/../linux
 
 function Get-CondaHook {
-#     Return "$PSScriptRoot/miniconda3/shell/condabin/conda-hook.ps1"
-    Return "$env:APPDATA/../Local/miniconda3/shell/condabin/conda-hook.ps1"
+     Return "$PSScriptRoot/miniconda3/shell/condabin/conda-hook.ps1"
 }
 
 <#
