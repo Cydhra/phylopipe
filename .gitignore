@@ -3,7 +3,8 @@
 **.iml
 
 # Windows Binaries
-modules/**.exe
+modules/*.exe
+/modules/**/*.exe
 modules/treestats/R
 
 # Linux Binaries
