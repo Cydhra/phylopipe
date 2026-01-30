@@ -20,8 +20,8 @@ if ($IsWindows) {
         curl $CONDA_INSTALLER --output "miniconda3.sh"
     }
 
-    New-Item -ItemType Directory -ErrorActthe ion SilentlyContinue miniconda3 > $null
-    & ./miniconda3.sh "-b" "-f" "-p" ./miniconda3
+    New-Item -ItemType Directory -ErrorAction SilentlyContinue miniconda3 > $null
+    & /usr/bin/env bash ./miniconda3.sh "-b" "-f" "-p" ./miniconda3
 }
 
 Import-Module $PSScriptRoot/../conda
