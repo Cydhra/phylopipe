@@ -1,8 +1,8 @@
-Import-Module $PSScriptRoot/../mongosh
+Import-Module $PSScriptRoot/../mongodb
 
 function Get-Taxonomy {
     param(
-        [Parameter(Required = $true, Position=0)]
+        [Parameter(Mandatory = $true, Position=0)]
         [string] $TaxId
     )
 
