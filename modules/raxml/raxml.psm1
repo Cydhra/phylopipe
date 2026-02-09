@@ -226,4 +226,19 @@ function Invoke-Raxml
     Invoke-OnLinux -Path (Get-RaxmlPath) $CommandLine
 }
 
+Import-DifficultyFromLog {
+    param (
+        [string] $LogFile
+    )
+
+    $Line = Get-Content $LogFile | Where-Object { $_.Contains('Predicted difficulty:') }
+    if ($Line -match 'Predicted difficulty: (0\.\d\d)') {
+        Return [float] $Matches[1]
+    } else {
+        Write-Error "Could not find difficulty in log file"
+        Return
+    }
+}
+
 Export-ModuleMember -Function Invoke-Raxml
+Export-ModuleMember -Function Import-DifficultyFromLog
