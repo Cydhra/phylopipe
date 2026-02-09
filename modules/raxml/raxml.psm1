@@ -226,7 +226,7 @@ function Invoke-Raxml
     Invoke-OnLinux -Path (Get-RaxmlPath) $CommandLine
 }
 
-Import-DifficultyFromLog {
+function Import-DifficultyFromLog {
     param (
         [string] $LogFile
     )
