@@ -26,8 +26,8 @@ function New-SimulatedMsa {
         [Parameter(Mandatory = $true)]
         [string] $Tree,
 
-        [Parameter(Mandatory = $true)]
-        [string] $Model,
+        [Parameter(Mandatory = $false)]
+        [string] $Model = "",
 
         [Parameter(Mandatory = $true)]
         [string] $Prefix,
@@ -46,7 +46,10 @@ function New-SimulatedMsa {
         [int] $Length = 1000,
 
         [Parameter(Mandatory = $false)]
-        [int] $Seed
+        [int] $Seed,
+
+        [Parameter(Mandatory = $false)]
+        [string] $PartitionFile = ""
     )
 
     $CommandLine = @()
@@ -56,8 +59,12 @@ function New-SimulatedMsa {
 
     $CommandLine += "--alisim"
     $CommandLine += $LinuxPrefix
-    $CommandLine += "-m"
-    $CommandLine += $Model
+
+    if ($Model -ne "") {
+        $CommandLine += "-m"
+        $CommandLine += $Model
+    }
+
     $CommandLine += "-t"
     $CommandLine += $LinuxTree
 
@@ -72,6 +79,11 @@ function New-SimulatedMsa {
     if (($InsertionRate -gt 0) -and ($DeletionRate -gt 0)) {
         $CommandLine += "--indel"
         $CommandLine += "$InsertionRate,$DeletionRate"
+    }
+
+    if ($PartitionFile -ne "") {
+        $CommandLine += "-Q"
+        $CommandLine += (ConvertTo-LinuxPath -Path $PartitionFile)
     }
 
     Invoke-OnLinux -Path (Get-IqTreePath) $CommandLine
