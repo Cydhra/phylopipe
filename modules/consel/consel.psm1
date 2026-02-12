@@ -81,7 +81,7 @@ function Invoke-Consel {
     $linux_rmt = ConvertTo-LinuxPath -Path $Rmt
     $linux_output = ConvertTo-LinuxPath -Path $Output
 
-    Invoke-OnLinux -Path (Get-ConselPath) $linux_rmt $linux_output
+    Invoke-OnLinux -Path (Get-ConselPath) $linux_rmt $linux_output "--no_sort" "--no_bp" "--no_pp" "--no_sh"
 }
 
 <#
