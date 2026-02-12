@@ -118,12 +118,6 @@ function Import-Pv {
                 obs = [float]$cols[3]
                 au = [float]$cols[4]
                 np = [float]$cols[5]
-                bp = [float]$cols[7]
-                pp = [float]$cols[8]
-                kh = [float]$cols[9]
-                sh = [float]$cols[10]
-                wkh = [float]$cols[11]
-                wsh = [float]$cols[12]
             }
         }
 }
