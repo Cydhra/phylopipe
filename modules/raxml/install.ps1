@@ -28,7 +28,7 @@ Invoke-OnLinux -Path /usr/bin/env bash ../compile.sh
 Pop-Location
 
 # Copy the compiled binary to the scripts directory
-Copy-Item raxml-ng/bin/raxml-ng-2 $INSTALL_FILE
+Copy-Item raxml-ng/bin/raxml-ng $INSTALL_FILE
 
 Write-Host "Cleaning up..."
 # Clean up

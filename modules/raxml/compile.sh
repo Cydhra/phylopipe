@@ -7,10 +7,10 @@ fi
 
 mkdir build && pushd build
 cmake -DSTATIC_BUILD=ON -DCORAX_BUILD_PORTABLE_ARCH=haswell -DPORTABLE_BUILD=ON ..
-make
+make -j
 popd
 
-./bin/raxml-ng-2 --version > /dev/null
+./bin/raxml-ng --version > /dev/null
 if [ $? -ne 0 ]; then
   echo "Compilation failed. Please check the output for errors."
   exit 1
