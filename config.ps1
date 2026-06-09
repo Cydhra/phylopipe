@@ -1,8 +1,8 @@
 $CONSEL_URL = "https://github.com/shimo-lab/consel"
 
 $RAXML_URL = "https://github.com/amkozlov/raxml-ng"
-$RAXML_BRANCH = "dev"
-$RAXML_COMMIT = "59e529d7a9e7dfcbfa45251158d4ce2bc7255d4c"
+$RAXML_BRANCH = "master"
+$RAXML_COMMIT = "d850b2cfbac4993ab6f91c51d6dce0ad3d7d2d67"
 
 $NEWICK_URL = "https://github.com/rcedgar/newick"
 $NEWICK_COMMIT = "83701cb4040ac5d364eb1403c7732af4f900d6bf"
