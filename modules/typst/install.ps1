@@ -1,5 +1,2 @@
-# Make sure conda is installed
-& $PSScriptRoot/../conda/install.ps1
-
 Import-Module $PSScriptRoot/../conda
-Invoke-InConda -- conda install -y conda-forge::typst
+Install-CondaPackage -Channel conda-forge -Name typst
