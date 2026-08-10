@@ -26,6 +26,19 @@ $IQTREE_URL = "https://github.com/iqtree/iqtree3/releases/download/v3.0.1/iqtree
 $NEMA_URL = "https://github.com/Cydhra/nm"
 $NEMA_COMMIT = "0ec0f8b35ac3bac9ebb33ee6f3e2bce4bbcf72e6"
 
+function Exit-Script {
+    Param(
+        [Parameter(Position = 0, Mandatory = $false)]
+        [int] $NumPops = 1
+    )
+
+    foreach ($i in 1..$NumPops) {
+        Pop-Location
+    }
+
+    exit 1
+}
+
 function Exit-On-Failure {
     Param(
         [Parameter(Position = 0, Mandatory = $false)]
@@ -35,10 +48,18 @@ function Exit-On-Failure {
     if ($LASTEXITCODE) {
         Write-Error "Aborting due to previous error (code $LASTEXITCODE)"
 
-        foreach ($i in 1..$NumPops) {
-            Pop-Location
-        }
+        Exit-Script $NumPops
+    }
+}
 
-        exit 1
+function Check-Conda-Build {
+    Param(
+        [Parameter(Position = 0, Mandatory = $false)]
+        [int] $NumPops = 1
+    )
+
+    if ((conda list -n base | Where-Object { $_ -match "conda-build" } | Measure-Object).Count -eq 0) {
+        Write-Error "Aborting because conda-build is not available"
+        Exit-Script $NumPops
     }
 }
