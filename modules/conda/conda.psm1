@@ -57,3 +57,20 @@ function Install-LocalCondaPackage {
     # has to be linux-style path
     conda install -y -c "../../channel" $Name --override-channels
 }
+
+function Install-CondaPackage {
+    Param (
+        [Parameter(Mandatory = $false)]
+        [string] $Channel = "",
+
+        [Parameter(Mandatory)]
+        [string] $Name
+    )
+
+    if ($Channel -ne "") {
+        conda install -y -c $Channel -n phylopipe $Name
+    } else {
+        conda install -y -n phylopipe $Name
+    }
+
+}
