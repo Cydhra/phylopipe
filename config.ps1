@@ -21,8 +21,6 @@ if ($IsWindows) {
     $CONDA_INSTALLER = "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
 }
 
-$IQTREE_URL = "https://github.com/iqtree/iqtree3/releases/download/v3.0.1/iqtree-3.0.1-Linux-intel.tar.gz"
-
 $NEMA_URL = "https://github.com/Cydhra/nm"
 $NEMA_COMMIT = "0ec0f8b35ac3bac9ebb33ee6f3e2bce4bbcf72e6"
 
