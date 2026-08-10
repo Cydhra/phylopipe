@@ -32,4 +32,28 @@ if ($LASTEXITCODE) {
     conda create -n phylopipe
 }
 
-conda activate phylopipe
+function Enter-Conda {
+    conda activate phylopipe
+}
+
+Enter-Conda
+
+function Install-LocalCondaPackage {
+    Param (
+        [Parameter(Mandatory)]
+        [string] $Path,
+
+        [Parameter(Mandatory)]
+        [string] $Name
+    )
+
+    $ChannelPath = [System.IO.Path]::Combine($PSScriptRoot, "..", "..", "channel")
+
+    conda activate base
+    conda build "$Path" --output-folder "$ChannelPath"
+
+    Enter-Conda
+
+    # has to be linux-style path
+    conda install -y -c "../../channel" $Name --override-channels
+}
