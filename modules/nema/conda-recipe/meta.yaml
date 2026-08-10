@@ -1,0 +1,14 @@
+package:
+  name: nema
+  version: 0.1.0
+
+source:
+  path: ..
+
+requirements:
+  build: []
+  run: []
+
+about:
+  home: https://github.com/Cydhra/nm
+  summary: Newick Manipulator command line tool
