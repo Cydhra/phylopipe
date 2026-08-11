@@ -9,7 +9,7 @@ New-Item -ItemType Directory -Path $INSTALL_DIR -ErrorAction SilentlyContinue > 
 
 if (Test-Path "$INSTALL_DIR/iqtree") {
     Pop-Location
-    Write-Host "iqtree3 already installed."
+    Write-Host -ForegroundColor Yellow "iqtree3 already installed."
     exit
 }
 
@@ -20,4 +20,4 @@ tar -xzf $TarBall --strip-components 2 -C $INSTALL_DIR "*/bin/iqtree3"
 Remove-Item $TarBall
 
 Pop-Location
-Write-Host "Successfully installed iqtree3."
+Write-Host -ForegroundColor Yellow "Successfully installed iqtree3."
