@@ -1,17 +1,26 @@
 Push-Location $PSScriptRoot
 
+. ../../config.ps1
+
 if (Test-Path "data") {
-    Write-Host "mongodb is already installed"
+    Write-Host -ForegroundColor Yellow "mongodb is already installed"
     Pop-Location
-    exit
 }
 
-# Make sure conda is installed
-& $PSScriptRoot/../conda/install.ps1
-
 Import-Module $PSScriptRoot/../conda
-Invoke-InConda -- conda install -y conda-forge::mongodb conda-forge::mongo-tools
+$Success = Install-CondaPackage -Channel conda-forge -Name mongodb
+
+If (-not $Success) {
+    Exit-Script
+}
+
+Install-CondaPackage -Channel conda-forge -Name mongo-tools
+
+If (-not $Success) {
+    Exit-Script
+}
 
 New-Item "data" -ItemType Directory
 
+Write-Host -ForegroundColor Yellow "mongodb successfully installed."
 Pop-Location
