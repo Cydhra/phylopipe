@@ -11,7 +11,6 @@ $LOGPATH="$DB_PATH\mongod.log"
  Starts the mongod process in a new process to allow it running in the background until Stop-Mongo is called.
 #>
 function Start-Mongo {
-    Set-CondaEnvironment
     Start-Process -NoNewWindow mongod -ArgumentList "--logpath $LOGPATH --dbpath $DB_PATH --bind_ip 127.0.0.1 --noauth"
 }
 
@@ -23,7 +22,7 @@ function Start-Mongo {
  Uses the mongoshell to shutdown the mongo server that was previously started with Start-Mongo
 #>
 function Stop-Mongo {
-    Invoke-InConda -- mongosh --eval 'db.getSiblingDB("admin").shutdownServer()'
+    mongosh --eval 'db.getSiblingDB("admin").shutdownServer()'
 }
 
 <#
@@ -47,8 +46,7 @@ function Import-MongoData {
         [Parameter(Mandatory = $false, ValueFromRemainingArguments)]
         [string[]] $Args
     )
-
-    Invoke-InConda -- mongoimport --db $Database --collection $Collection @Args
+    mongoimport --db $Database --collection $Collection @Args
 }
 
 <#
@@ -60,7 +58,7 @@ function Import-MongoConfiguration {
         [string] $Path
     )
 
-    Invoke-InConda -- mongosh --eval "load(`"$Path`");"
+    mongosh --eval "load(`"$Path`");"
 }
 
 <#
@@ -68,7 +66,7 @@ function Import-MongoConfiguration {
  Run a command in the mongo shell.
 
  .DESCRIPTION
- Calls mongosh with the provided command line.
+ Calls mongosh with the provided command line. This is synonymous to `mongosh @Args`.
 
  .PARAMETER Args
  Arguments that get passed through to mongosh.
@@ -79,5 +77,5 @@ function Invoke-MongoSh {
         [string[]] $Args
     )
 
-    Invoke-InConda -- mongosh @Args
+    mongosh @Args
 }
