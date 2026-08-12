@@ -31,4 +31,7 @@ conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/msys2
 conda env create -f phylopipe.yml
 
+# make sure conda-build is available to facilitate installation of custom conda packages
+conda install -y -n base conda-build
+
 Pop-Location
