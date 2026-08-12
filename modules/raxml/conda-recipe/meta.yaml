@@ -1,0 +1,14 @@
+package:
+  name: raxml-ng
+  version: 2.0.1
+
+source:
+  path: ..
+
+requirements:
+  build: []
+  run: []
+
+about:
+  home: https://codeberg.org/amkozlov/raxml-ng
+  summary: RAxML-NG is a phylogenetic tree inference tool which uses maximum-likelihood (ML) optimality criterion.

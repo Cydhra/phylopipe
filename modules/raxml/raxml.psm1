@@ -2,7 +2,7 @@ Import-Module $PSScriptRoot/../linux
 
 function Get-RaxmlPath
 {
-    return ConvertTo-LinuxPath -Path ([System.IO.Path]::Combine($PSScriptRoot, "raxml-ng-2"))
+    return ConvertTo-LinuxPath -Path ([System.IO.Path]::Combine($PSScriptRoot, "bin/raxml-ng"))
 }
 
 <#
