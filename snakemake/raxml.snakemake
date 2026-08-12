@@ -32,12 +32,15 @@ def load_config_hierarchical(hierarchy, default):
 
     return setting
 
+def load_setting(wc, setting, default):
+    hierarchy = config_hierarchy_from_path(setting, wc.folder)
+    hierarchy.append(wc.msa)
+    return load_config_hierarchical(hierarchy, default)
+
 # load the model for a given dataset. The model is loaded from the "models" key, by following the hierarchy of folders
 # up to the MSA
 def load_model(wc):
-    hierarchy = config_hierarchy_from_path("models", wc.folder)
-    hierarchy.append(wc.msa)
-    return load_config_hierarchical(hierarchy, "GTR+G")
+    return load_setting(wc, "models", "GTR+G")
 
 # load the thread count for a given dataset from the "threads: rule: ..." key, where "rule" is the name of the rule
 # by following the hierarchy of folders up to the MSA file, loading the value which is most specific for the given MSA.
@@ -92,3 +95,19 @@ rule PYTHIA_PHYLIP:
         runtime="1h"
     shell:
         "raxml-ng --pythia --msa {input} --model {params.model} --prefix {wildcards.folder}/pythia/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
+
+rule INFER_TREES:
+    input:
+        "{folder}/raxml/{msa}.parse.raxml.rba"
+    output:
+        "{folder}/raxml/{msa}.search.raxml.bestModel",
+        "{folder}/raxml/{msa}.search.raxml.bestTree",
+        "{folder}/raxml/{msa}.search.raxml.mlTrees",
+        "{folder}/raxml/{msa}.search.raxml.startTree",
+    log:
+        "{folder}/raxml/{msa}.search.raxml.log",
+    conda: "phylopipe"
+    threads: lambda wc: load_threads(wc, "search")
+    # could be replaced by run: to allow modifying the command line with parameters
+    shell:
+        "raxml-ng --search --msa {input} --prefix {wildcards.folder}/raxml/{wildcards.msa}.search --threads {threads} --force perf_threads"
