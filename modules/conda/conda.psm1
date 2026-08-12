@@ -69,10 +69,9 @@ function Install-LocalCondaPackage {
     conda activate base
     conda build "$Path" --output-folder "$ChannelPath"
 
-    Enter-Conda
-
     # has to be linux-style path
-    conda install -y -c "../../channel" $Name --override-channels
+    $LinuxChannelPath = ConvertTo-LinuxPath -Path "$ChannelPath"
+    conda install -y -c "$LinuxChannelPath" -n phylopipe $Name --override-channels
 
     Return $LASTEXITCODE -eq 0
 }
