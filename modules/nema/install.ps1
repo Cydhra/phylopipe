@@ -36,6 +36,8 @@ Exit-On-Failure 2
 git submodule update --init --recursive
 Exit-On-Failure 2
 
+Enter-Conda
+
 cargo build --release
 Exit-On-Failure 2
 
