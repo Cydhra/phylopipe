@@ -93,17 +93,19 @@ function Install-LocalCondaPackage {
 function Install-CondaPackage {
     Param (
         [Parameter(Mandatory = $false)]
-        [string] $Channel = "",
+        [string[]] $Channel = @(),
 
         [Parameter(Mandatory)]
         [string] $Name
     )
 
-    if ($Channel -ne "") {
-        conda install -y -c $Channel -n phylopipe $Name
-    } else {
-        conda install -y -n phylopipe $Name
+    $Parameters = "-y", "-n", "phylopipe"
+
+    foreach ($C in $Channel) {
+        $Parameters += "-c", $C
     }
+
+    conda install @Parameters $Name
 
     Return $LASTEXITCODE -eq 0
 }
