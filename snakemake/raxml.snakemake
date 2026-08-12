@@ -1,0 +1,94 @@
+from os.path import split
+
+# Generate a hierarchy of config options where settings can be applied to individual files or folders of multiple files.
+# Intended to be used with load_config_hierarchical
+def config_hierarchy_from_path(root, path):
+    hierarchy = [root]
+    head, tail = split(path)
+    while True:
+        if tail:
+            hierarchy.append(tail)
+        if not head:
+            break
+        head, tail = split(head)
+
+    return hierarchy
+
+# Load a setting for a given hierarchy of specificity. It loads the setting from the key that is most specific (i.e.
+# towards the end of the hierarchy). If no key in the hierarchy is specified, it returns the default setting.
+def load_config_hierarchical(hierarchy, default):
+    setting = default
+    config_obj = config
+    for key in hierarchy:
+        next_obj = config_obj.get(key)
+        if not next_obj:
+            setting = config_obj.get("default", setting)
+            break
+        elif not isinstance(next_obj, dict):
+            setting = next_obj
+            break
+        else:
+            config_obj = next_obj
+
+    return setting
+
+# load the model for a given dataset. The model is loaded from the "models" key, by following the hierarchy of folders
+# up to the MSA
+def load_model(wc):
+    hierarchy = config_hierarchy_from_path("models", wc.folder)
+    hierarchy.append(wc.msa)
+    return load_config_hierarchical(hierarchy, "GTR+G")
+
+# load the thread count for a given dataset from the "threads: rule: ..." key, where "rule" is the name of the rule
+# by following the hierarchy of folders up to the MSA file, loading the value which is most specific for the given MSA.
+def load_threads(wc, rule):
+    hierarchy = config_hierarchy_from_path(rule, wc.folder)
+    hierarchy.insert(0, "threads")
+    hierarchy.append(wc.msa)
+    return load_config_hierarchical(hierarchy, 1)
+
+rule PARSE_FASTA:
+    input:  "{folder}/{msa}.fasta"
+    output: "{folder}/raxml/{msa}.parse.raxml.rba"
+    log:    "{folder}/raxml/{msa}.parse.raxml.log"
+    conda:  "phylopipe"
+    threads: lambda wc: load_threads(wc, "parse")
+    params:
+        model=load_model
+    shell:
+        "raxml-ng --parse --msa {input} --model {params.model} --prefix {wildcards.folder}/raxml/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
+
+rule PARSE_PHYLIP:
+    input:  "{folder}/{msa}.phy"
+    output: "{folder}/raxml/{msa}.parse.raxml.rba"
+    log:    "{folder}/raxml/{msa}.parse.raxml.log"
+    conda:  "phylopipe"
+    threads: lambda wc: load_threads(wc, "parse")
+    params:
+        model=load_model
+    shell:
+        "raxml-ng --parse --msa {input} --model {params.model} --prefix {wildcards.folder}/raxml/{wildcards.msa}.parse --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
+
+rule PYTHIA_FASTA:
+    input:  "{folder}/{msa}.fasta"
+    log: "{folder}/pythia/{msa}.raxml.log"
+    conda:  "phylopipe"
+    threads: lambda wc: load_threads(wc, "pythia")
+    params:
+        model=load_model
+    resources:
+        runtime="1h"
+    shell:
+        "raxml-ng --pythia --msa {input} --model {params.model} --prefix {wildcards.folder}/pythia/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
+
+rule PYTHIA_PHYLIP:
+    input:  "{folder}/{msa}.phy"
+    log: "{folder}/pythia/{msa}.raxml.log"
+    conda:  "phylopipe"
+    threads: lambda wc: load_threads(wc, "pythia")
+    params:
+        model=load_model
+    resources:
+        runtime="1h"
+    shell:
+        "raxml-ng --pythia --msa {input} --model {params.model} --prefix {wildcards.folder}/pythia/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
