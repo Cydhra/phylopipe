@@ -50,6 +50,14 @@ def load_threads(wc, rule):
     hierarchy.append(wc.msa)
     return load_config_hierarchical(hierarchy, 1)
 
+# load extra options for the raxml command for a specific rule
+# by following the hierarchy of folders up to the MSA file, loading the value which is most specific for the given MSA.
+def load_extra(wc, rule):
+    hierarchy = config_hierarchy_from_path(rule, wc.folder)
+    hierarchy.insert(0, "extra")
+    hierarchy.append(wc.msa)
+    return load_config_hierarchical(hierarchy, "")
+
 rule PARSE_FASTA:
     input:  "{folder}/{msa}.fasta"
     output: "{folder}/raxml/{msa}.parse.raxml.rba"
@@ -57,9 +65,10 @@ rule PARSE_FASTA:
     conda:  "phylopipe"
     threads: lambda wc: load_threads(wc, "parse")
     params:
-        model=load_model
+        model=load_model,
+        extra = lambda wc: load_extra(wc, "parse"),
     shell:
-        "raxml-ng --parse --msa {input} --model {params.model} --prefix {wildcards.folder}/raxml/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
+        "raxml-ng --parse --msa {input} --model {params.model} --prefix {wildcards.folder}/raxml/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove {params.extra}"
 
 rule PARSE_PHYLIP:
     input:  "{folder}/{msa}.phy"
@@ -68,9 +77,10 @@ rule PARSE_PHYLIP:
     conda:  "phylopipe"
     threads: lambda wc: load_threads(wc, "parse")
     params:
-        model=load_model
+        model=load_model,
+        extra = lambda wc: load_extra(wc, "parse"),
     shell:
-        "raxml-ng --parse --msa {input} --model {params.model} --prefix {wildcards.folder}/raxml/{wildcards.msa}.parse --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
+        "raxml-ng --parse --msa {input} --model {params.model} --prefix {wildcards.folder}/raxml/{wildcards.msa}.parse --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove {params.extra}"
 
 rule PYTHIA_FASTA:
     input:  "{folder}/{msa}.fasta"
@@ -78,11 +88,12 @@ rule PYTHIA_FASTA:
     conda:  "phylopipe"
     threads: lambda wc: load_threads(wc, "pythia")
     params:
-        model=load_model
+        model=load_model,
+        extra = lambda wc: load_extra(wc, "pythia"),
     resources:
         runtime="1h"
     shell:
-        "raxml-ng --pythia --msa {input} --model {params.model} --prefix {wildcards.folder}/pythia/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
+        "raxml-ng --pythia --msa {input} --model {params.model} --prefix {wildcards.folder}/pythia/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove {params.extra}"
 
 rule PYTHIA_PHYLIP:
     input:  "{folder}/{msa}.phy"
@@ -90,11 +101,12 @@ rule PYTHIA_PHYLIP:
     conda:  "phylopipe"
     threads: lambda wc: load_threads(wc, "pythia")
     params:
-        model=load_model
+        model=load_model,
+        extra = lambda wc: load_extra(wc, "pythia"),
     resources:
         runtime="1h"
     shell:
-        "raxml-ng --pythia --msa {input} --model {params.model} --prefix {wildcards.folder}/pythia/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove --redo"
+        "raxml-ng --pythia --msa {input} --model {params.model} --prefix {wildcards.folder}/pythia/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove {params.extra}"
 
 rule INFER_TREES:
     input:
@@ -108,9 +120,10 @@ rule INFER_TREES:
         "{folder}/raxml/{msa}.search.raxml.log",
     conda: "phylopipe"
     threads: lambda wc: load_threads(wc, "search")
-    # could be replaced by run: to allow modifying the command line with parameters
+    params:
+        extra = lambda wc: load_extra(wc, "search"),
     shell:
-        "raxml-ng --search --msa {input} --prefix {wildcards.folder}/raxml/{wildcards.msa}.search --threads {threads} --force perf_threads"
+        "raxml-ng --search --msa {input} --prefix {wildcards.folder}/raxml/{wildcards.msa}.search --threads {threads} --force perf_threads {params.extra}"
 
 rule BOOTSTRAP:
     input:
@@ -123,8 +136,9 @@ rule BOOTSTRAP:
     threads: lambda wc: load_threads(wc, "bootstrap")
     params:
         bs_trees = lambda wc: load_setting(wc, "bs_trees", 500),
+        extra = lambda wc: load_extra(wc, "bootstrap"),
     shell:
-        "raxml-ng --bootstrap --msa {input} --prefix {wildcards.folder}/bootstrap/{wildcards.msa}.{wildcards.metric} --threads {threads} --bs-metric {wildcards.metric} --bs-trees {params.bs_trees} --force perf_threads"
+        "raxml-ng --bootstrap --msa {input} --prefix {wildcards.folder}/bootstrap/{wildcards.msa}.{wildcards.metric} --threads {threads} --bs-metric {wildcards.metric} --bs-trees {params.bs_trees} --force perf_threads {params.extra}"
 
 rule SUPPORT:
     input:
@@ -136,5 +150,7 @@ rule SUPPORT:
         "{folder}/bootstrap/{msa}.{metric}.support.raxml.log"
     conda: "phylopipe"
     threads: 1
+    params:
+        extra = lambda wc: load_extra(wc, "support"),
     shell:
-        "raxml-ng --support --tree {input.tree_file} --prefix {wildcards.folder}/bootstrap/{wildcards.msa}.{wildcards.metric}.support --threads {threads} --bs-metric {wildcards.metric} --bs-trees {input.bootstraps} --force perf_threads"
+        "raxml-ng --support --tree {input.tree_file} --prefix {wildcards.folder}/bootstrap/{wildcards.msa}.{wildcards.metric}.support --threads {threads} --bs-metric {wildcards.metric} --bs-trees {input.bootstraps} --force perf_threads {params.extra}"
