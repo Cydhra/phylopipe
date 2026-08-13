@@ -125,3 +125,16 @@ rule BOOTSTRAP:
         bs_trees = lambda wc: load_setting(wc, "bs_trees", 500),
     shell:
         "raxml-ng --bootstrap --msa {input} --prefix {wildcards.folder}/bootstrap/{wildcards.msa}.{wildcards.metric} --threads {threads} --bs-metric {wildcards.metric} --bs-trees {params.bs_trees} --force perf_threads"
+
+rule SUPPORT:
+    input:
+         bootstraps = "{folder}/bootstrap/{msa}.{metric}.raxml.bootstraps",
+         tree_file = "{folder}/raxml/{msa}.search.raxml.bestTree",
+    output:
+        "{folder}/bootstrap/{msa}.{metric}.support.raxml.support"
+    log:
+        "{folder}/bootstrap/{msa}.{metric}.support.raxml.log"
+    conda: "phylopipe"
+    threads: 1
+    shell:
+        "raxml-ng --support --tree {input.tree_file} --prefix {wildcards.folder}/bootstrap/{wildcards.msa}.{wildcards.metric}.support --threads {threads} --bs-metric {wildcards.metric} --bs-trees {input.bootstraps} --force perf_threads"
