@@ -111,3 +111,17 @@ rule INFER_TREES:
     # could be replaced by run: to allow modifying the command line with parameters
     shell:
         "raxml-ng --search --msa {input} --prefix {wildcards.folder}/raxml/{wildcards.msa}.search --threads {threads} --force perf_threads"
+
+rule BOOTSTRAP:
+    input:
+        "{folder}/raxml/{msa}.parse.raxml.rba"
+    output:
+        "{folder}/bootstrap/{msa}.{metric}.raxml.bootstraps"
+    log:
+        "{folder}/bootstrap/{msa}.{metric}.raxml.log"
+    conda: "phylopipe"
+    threads: lambda wc: load_threads(wc, "bootstrap")
+    params:
+        bs_trees = lambda wc: load_setting(wc, "bs_trees", 500),
+    shell:
+        "raxml-ng --bootstrap --msa {input} --prefix {wildcards.folder}/bootstrap/{wildcards.msa}.{wildcards.metric} --threads {threads} --bs-metric {wildcards.metric} --bs-trees {params.bs_trees} --force perf_threads"
