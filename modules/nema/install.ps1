@@ -58,5 +58,7 @@ conda activate base
 Write-Host -ForegroundColor Yellow "Building conda package..."
 Install-LocalCondaPackage -Path . -Name nema
 
+Enter-Conda
+
 Pop-Location
 
