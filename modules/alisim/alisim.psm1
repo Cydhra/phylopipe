@@ -86,5 +86,12 @@ function New-SimulatedMsa {
         $CommandLine += (ConvertTo-LinuxPath -Path $PartitionFile)
     }
 
+    $CommandLine += "-seed"
+    if ($Seed -gt 0) {
+        $CommandLine += $Seed
+    } else {
+        $CommandLine += (Get-Random)
+    }
+
     Invoke-OnLinux -Path (Get-IqTreePath) $CommandLine
 }
