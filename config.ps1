@@ -24,7 +24,7 @@ if ($IsWindows) {
 $IQTREE_URL = "https://github.com/iqtree/iqtree3/releases/download/v3.1.3/iqtree-3.1.3-Linux-intel.tar.gz"
 
 $NEMA_URL = "https://github.com/Cydhra/nema"
-$NEMA_COMMIT = "34198863af36a880c4c944a286da9c8553a52e7b"
+$NEMA_COMMIT = "be48128349127454e1e670ec6f1d7e48f864f47e"
 
 function Exit-Script {
     Param(
