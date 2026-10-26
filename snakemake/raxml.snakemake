@@ -7,7 +7,7 @@ def config_hierarchy_from_path(root, path):
     head, tail = split(path)
     while True:
         if tail:
-            hierarchy.append(tail)
+            hierarchy.insert(1, tail)
         if not head:
             break
         head, tail = split(head)
