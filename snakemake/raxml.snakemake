@@ -68,7 +68,7 @@ rule PARSE_FASTA:
         model=load_model,
         extra = lambda wc: load_extra(wc, "parse"),
     shell:
-        "raxml-ng --parse --msa {input} --model {params.model} --prefix {wildcards.folder}/raxml/{wildcards.msa} --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove {params.extra}"
+        "raxml-ng --parse --msa {input} --model {params.model} --prefix {wildcards.folder}/raxml/{wildcards.msa}.parse --threads {threads} --force perf_threads --extra seq-dup-keep --extra seq-allgap-remove {params.extra}"
 
 rule PARSE_PHYLIP:
     input:  "{folder}/{msa}.phy"
