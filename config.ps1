@@ -26,6 +26,8 @@ $IQTREE_URL = "https://github.com/iqtree/iqtree3/releases/download/v3.1.3/iqtree
 $NEMA_URL = "https://github.com/Cydhra/nema"
 $NEMA_COMMIT = "be48128349127454e1e670ec6f1d7e48f864f47e"
 
+$TQ_URL = "https://www.birc.au.dk/~cstorm/software/tqdist/files/tqDist-1.0.2.zip"
+
 function Exit-Script {
     Param(
         [Parameter(Position = 0, Mandatory = $false)]
