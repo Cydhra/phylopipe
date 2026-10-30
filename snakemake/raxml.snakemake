@@ -121,9 +121,10 @@ rule INFER_TREES:
     conda: "phylopipe"
     threads: lambda wc: load_threads(wc, "search")
     params:
+        start = lambda wc: load_setting(wc, "search_start_trees", "pars{16}"),
         extra = lambda wc: load_extra(wc, "search"),
     shell:
-        "raxml-ng --search --msa {input} --prefix {wildcards.folder}/raxml/{wildcards.msa}.search --threads {threads} --force perf_threads {params.extra}"
+        "raxml-ng --search --msa {input} --tree {params.start} --prefix {wildcards.folder}/raxml/{wildcards.msa}.search --threads {threads} --force perf_threads {params.extra}"
 
 rule BOOTSTRAP:
     input:
